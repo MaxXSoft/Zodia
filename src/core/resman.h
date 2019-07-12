@@ -18,6 +18,9 @@ class ResManager {
       return images_[name];
   }
 
+  // clear all images
+  void Clear() { images_.clear(); }
+
  private:
   const SDLRendererPtr &renderer_;
   std::map<std::string, SDLTexturePtr> images_;

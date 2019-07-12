@@ -14,7 +14,7 @@ class Window {
   Window()
       : title_("Zodia"), width_(1280), height_(960),
         handle_events_(true), quit_flag_(false), paused_(false),
-        scene_man_(*this),
+        res_man_(renderer_), scene_man_(*this),
         window_(nullptr, nullptr), renderer_(nullptr, nullptr) {
     NewInstance();
     Initialize();
@@ -22,7 +22,7 @@ class Window {
   Window(const std::string &title)
       : title_(title), width_(1280), height_(960),
         handle_events_(true), quit_flag_(false), paused_(false),
-        scene_man_(*this),
+        res_man_(renderer_), scene_man_(*this),
         window_(nullptr, nullptr), renderer_(nullptr, nullptr) {
     NewInstance();
     Initialize();
@@ -30,7 +30,7 @@ class Window {
   Window(const std::string &title, int width, int height)
       : title_(title), width_(width), height_(height),
         handle_events_(true), quit_flag_(false), paused_(false),
-        scene_man_(*this),
+        res_man_(renderer_), scene_man_(*this),
         window_(nullptr, nullptr), renderer_(nullptr, nullptr) {
     NewInstance();
     Initialize();
@@ -48,8 +48,6 @@ class Window {
   void MainLoop();
   // set quit flag to true, and then quit from game
   void Quit();
-  // create a new resource manager for current window
-  ResManager CreateResManager() { return ResManager(renderer_); }
 
   // setters
   void set_title(const std::string &title) {
@@ -61,6 +59,7 @@ class Window {
   const std::string &title() const { return title_; }
   int width() const { return width_; }
   int height() const { return height_; }
+  ResManager &res_man() { return res_man_; }
   SceneManager &scene_man() { return scene_man_; }
 
  protected:  // event handlers
@@ -118,7 +117,8 @@ class Window {
   std::string title_;
   const int width_, height_;
   bool handle_events_, quit_flag_, paused_;
-  // scene manager
+  // managers
+  ResManager res_man_;
   SceneManager scene_man_;
   // other private variables
   SDLWindowPtr window_;
