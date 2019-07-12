@@ -35,7 +35,7 @@ class Group : public Sprite, public ParentInterface {
   }
 
   void Render(const SDLRendererPtr &renderer) override;
-  bool IsCollide(Sprite *sprite) override;
+  bool IsCollide(const Sprite &sprite) override;
   void RemoveObject(void *id) override;
 
  private:

@@ -37,13 +37,13 @@ void Sprite::Render(const SDLRendererPtr &renderer) {
   }
 }
 
-bool Sprite::IsCollide(Sprite *sprite) {
+bool Sprite::IsCollide(const Sprite &sprite) {
   if (!visible_) return false;
   auto h_dist =
-      SDL_abs(x_ + bounding_.x - (sprite->x_ + sprite->bounding_.x));
+      SDL_abs(x_ + bounding_.x - (sprite.x_ + sprite.bounding_.x));
   auto v_dist =
-      SDL_abs(y_ + bounding_.y - (sprite->y_ + sprite->bounding_.y));
-  auto half_w = (bounding_.w + sprite->bounding_.w) / 2;
-  auto half_h = (bounding_.h + sprite->bounding_.h) / 2;
+      SDL_abs(y_ + bounding_.y - (sprite.y_ + sprite.bounding_.y));
+  auto half_w = (bounding_.w + sprite.bounding_.w) / 2;
+  auto half_h = (bounding_.h + sprite.bounding_.h) / 2;
   return h_dist < half_w && v_dist < half_h;
 }

@@ -14,7 +14,7 @@ class Window {
   Window()
       : title_("Zodia"), width_(1280), height_(960),
         handle_events_(true), quit_flag_(false), paused_(false),
-        scene_man_(this),
+        scene_man_(*this),
         window_(nullptr, nullptr), renderer_(nullptr, nullptr) {
     NewInstance();
     Initialize();
@@ -22,7 +22,7 @@ class Window {
   Window(const std::string &title)
       : title_(title), width_(1280), height_(960),
         handle_events_(true), quit_flag_(false), paused_(false),
-        scene_man_(this),
+        scene_man_(*this),
         window_(nullptr, nullptr), renderer_(nullptr, nullptr) {
     NewInstance();
     Initialize();
@@ -30,7 +30,7 @@ class Window {
   Window(const std::string &title, int width, int height)
       : title_(title), width_(width), height_(height),
         handle_events_(true), quit_flag_(false), paused_(false),
-        scene_man_(this),
+        scene_man_(*this),
         window_(nullptr, nullptr), renderer_(nullptr, nullptr) {
     NewInstance();
     Initialize();
@@ -61,7 +61,7 @@ class Window {
   const std::string &title() const { return title_; }
   int width() const { return width_; }
   int height() const { return height_; }
-  const SceneManager &scene_man() const { return scene_man_; }
+  SceneManager &scene_man() { return scene_man_; }
 
  protected:  // event handlers
   // program events
@@ -96,6 +96,7 @@ class Window {
   virtual void BeforeRender(const SDLRendererPtr &renderer) {}
   virtual void AfterRender(const SDLRendererPtr &renderer) {}
 
+  // set the flag of handle events
   void set_handle_events(bool enabled) { handle_events_ = enabled; }
 
  private:

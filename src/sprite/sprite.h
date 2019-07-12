@@ -31,7 +31,7 @@ class Sprite {
   // force rendering current sprite
   virtual void Render(const SDLRendererPtr &renderer);
   // check if current sprite collides with specific sprite
-  virtual bool IsCollide(Sprite *sprite);
+  virtual bool IsCollide(const Sprite &sprite);
 
   // setters
   void set_x(int x) { x_ = x; }

@@ -15,7 +15,7 @@ void Group::Render(const SDLRendererPtr &renderer) {
   }
 }
 
-bool Group::IsCollide(Sprite *sprite) {
+bool Group::IsCollide(const Sprite &sprite) {
   if (!visible()) return false;
   // check if there is a sprite collides with specific sprite
   for (const auto &i : sprites_) {
