@@ -3,8 +3,10 @@
 
 #include "sprite/sprite.h"
 
+// can be used as the background of a scene
 class Background : public Sprite {
  public:
+  // arrangement of background image
   enum class Arrange : char { Tile, Stretch, Fill };
 
   Background(ParentPtr parent, const SDLTexturePtr &texture,

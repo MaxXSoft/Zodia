@@ -11,12 +11,12 @@ class Timer {
 
   void Restart() { ticks_ = SDL_GetTicks(); }
 
-  bool CheckInterval(uint32_t interval) {
+  bool CheckInterval(std::uint32_t interval) {
     return SDL_GetTicks() - ticks_ >= interval;
   }
 
  private:
-  uint32_t ticks_;
+  std::uint32_t ticks_;
 };
 
 #endif  // ZODIA_CORE_TIMER_H_

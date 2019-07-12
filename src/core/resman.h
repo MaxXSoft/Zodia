@@ -6,6 +6,7 @@
 
 #include "define/sdltype.h"
 
+// resource manager
 class ResManager {
  public:
   ResManager(const SDLRendererPtr &renderer) : renderer_(renderer) {}

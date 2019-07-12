@@ -16,25 +16,27 @@ class Number : public Sprite {
 
   void Render(const SDLRendererPtr &renderer) override;
 
-  void set_number(uint32_t number) {
+  // setters & getters of number
+  void set_number(std::uint32_t number) {
     number_ = number;
     set_width(clip().w * GetNumberLen());
   }
-  uint32_t number() const { return number_; }
+  std::uint32_t number() const { return number_; }
 
  private:
+  // get the number of digits
   int GetNumberLen() {
-    const uint32_t len_list[] = {
+    const std::uint32_t len_list[] = {
       9, 99, 999, 9999, 99999, 999999, 9999999, 99999999, 999999999,
-      std::numeric_limits<uint32_t>::max(),
+      std::numeric_limits<std::uint32_t>::max(),
     };
-    for (int i = 0; i < sizeof(len_list) / sizeof(uint32_t); ++i) {
+    for (int i = 0; i < sizeof(len_list) / sizeof(std::uint32_t); ++i) {
       if (number_ <= len_list[i]) return i + 1;
     }
     return 0;
   }
 
-  uint32_t number_;
+  std::uint32_t number_;
 };
 
 #endif  // ZODIA_SPRITE_NUMBER_H_

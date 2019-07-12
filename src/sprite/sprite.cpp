@@ -5,12 +5,15 @@
 #include "util/logger.h"
 
 void Sprite::InitTextureInfo() {
+  // check if is invalid texture
   if (!texture_) {
     Logger::LogError("Sprite::InitTextureInfo");
     throw std::runtime_error("texture pointer cannot be null");
   }
+  // get width and height of texture
   int w, h;
   SDL_QueryTexture(texture_.get(), nullptr, nullptr, &w, &h);
+  // set width and height of current sprite
   if (is_clipped_) {
     if (clip_.x + clip_.w > w || clip_.y + clip_.h > h) {
       Logger::LogError("Sprite::InitTextureInfo");
@@ -23,6 +26,7 @@ void Sprite::InitTextureInfo() {
     width_ = w;
     height_ = h;
   }
+  // set up bouding box
   bounding_ = {0, 0, width_, height_};
 }
 

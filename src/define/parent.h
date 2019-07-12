@@ -1,7 +1,7 @@
 #ifndef ZODIA_DEFINE_PARENT_H_
 #define ZODIA_DEFINE_PARENT_H_
 
-// interface for parent containers
+// interface for all parent containers
 class ParentInterface {
  public:
   virtual ~ParentInterface() = default;

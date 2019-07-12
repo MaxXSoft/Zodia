@@ -10,10 +10,12 @@ void Background::Render(const SDLRendererPtr &renderer) {
     case Arrange::Tile:
     case Arrange::Fill:
     default: {
+      // get width and height of renderer
       int w, h;
       SDL_GetRendererOutputSize(renderer.get(), &w, &h);
+      // check if need to tile image
       if (arrange_ == Arrange::Tile) {
-        SDL_Rect dest = {0, 0, width(), height()};
+        SDLRect dest = {0, 0, width(), height()};
         int max_x = SDL_ceilf(w * 1.f / width());
         int max_y = SDL_ceilf(h * 1.f / height());
         for (int i = 0; i < max_x; ++i) {
@@ -26,9 +28,10 @@ void Background::Render(const SDLRendererPtr &renderer) {
         }
       }
       else {  // Arrange::Fill
-        SDL_Rect dest;
+        SDLRect dest;
         auto ratio = w * 1.0 / h;
         auto ratio_txt = width() * 1.0 / height();
+        // scale image to maintain the original ratio
         if (ratio > ratio_txt) {
           dest = {0, 0, w, static_cast<int>(w / ratio_txt)};
           dest.y = (h - dest.h) / 2;

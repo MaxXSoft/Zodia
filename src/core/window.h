@@ -73,16 +73,20 @@ class Window {
   virtual void LostFocusEvent() {}
   virtual void ClosedEvent() {}
   // keyboard events
-  virtual void KeyDownEvent(uint32_t keycode) {}
-  virtual void KeyUpEvent(uint32_t keycode) {}
+  virtual void KeyDownEvent(std::uint32_t keycode) {}
+  virtual void KeyUpEvent(std::uint32_t keycode) {}
   // mouse events
-  virtual void MouseMoveEvent(uint32_t state, uint32_t x, uint32_t y,
-                              int32_t rx, int32_t ry) {}
-  virtual void MouseDownEvent(uint8_t button, uint8_t state,
-                              uint8_t clicks, int32_t x, int32_t y) {}
-  virtual void MouseUpEvent(uint8_t button, uint8_t state, uint8_t clicks,
-                            int32_t x, int32_t y) {}
-  virtual void MouseWhellEvent(int32_t x, int32_t y, uint32_t direction) {}
+  virtual void MouseMoveEvent(std::uint32_t state, std::uint32_t x,
+                              std::uint32_t y, std::int32_t rx,
+                              std::int32_t ry) {}
+  virtual void MouseDownEvent(std::uint8_t button, std::uint8_t state,
+                              std::uint8_t clicks, std::int32_t x,
+                              std::int32_t y) {}
+  virtual void MouseUpEvent(std::uint8_t button, std::uint8_t state,
+                            std::uint8_t clicks, std::int32_t x,
+                            std::int32_t y) {}
+  virtual void MouseWhellEvent(std::int32_t x, std::int32_t y,
+                               std::uint32_t direction) {}
   // other events
   virtual void CustomEvent(const SDL_Event &event) {}
 

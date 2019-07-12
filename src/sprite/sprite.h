@@ -9,6 +9,7 @@
 class Sprite;
 using SpritePtr = std::shared_ptr<Sprite>;
 
+// base class of all sprites in scene
 class Sprite {
  public:
   Sprite(ParentPtr parent)
@@ -27,9 +28,12 @@ class Sprite {
   }
   virtual ~Sprite() = default;
 
+  // force rendering current sprite
   virtual void Render(const SDLRendererPtr &renderer);
+  // check if current sprite collides with specific sprite
   virtual bool IsCollide(Sprite *sprite);
 
+  // setters
   void set_x(int x) { x_ = x; }
   void set_y(int y) { y_ = y; }
   void set_width(int width) { width_ = width; }
@@ -37,6 +41,7 @@ class Sprite {
   void set_visible(bool visible) { visible_ = visible; }
   void set_bounding(const SDLRect &bounding) { bounding_ = bounding; }
 
+  // getters
   int x() const { return x_; }
   int y() const { return y_; }
   int width() const { return width_; }
@@ -45,6 +50,7 @@ class Sprite {
   const SDLRect &bounding() const { return bounding_; }
 
  protected:
+  // getters (protected)
   ParentPtr parent() const { return parent_; }
   bool is_clipped() const { return is_clipped_; }
   const SDLRect &clip() const { return clip_; }
@@ -52,6 +58,7 @@ class Sprite {
   const SDLRect *src_ptr() const { return is_clipped_ ? &clip_ : nullptr; }
 
  private:
+  // initialize texture of current sprite
   void InitTextureInfo();
 
   ParentPtr parent_;

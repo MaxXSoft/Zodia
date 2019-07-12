@@ -9,6 +9,7 @@ std::mutex Window::instance_mutex_;
 
 void Window::NewInstance() {
   std::lock_guard<std::mutex> lock(instance_mutex_);
+  // check if need to initialize SDL system
   if (!instance_counter_) {
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
       Logger::LogError("Window::NewInstance");
@@ -24,6 +25,7 @@ void Window::ReleaseInstance() {
   Logger::LogDebug("window destroyed");
   std::lock_guard<std::mutex> lock(instance_mutex_);
   --instance_counter_;
+  // check if need to destruct SDL system
   if (!instance_counter_) {
     SDL_Quit();
     Logger::LogDebug("SDL has been shutdown");
