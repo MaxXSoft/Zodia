@@ -1,4 +1,4 @@
-#include <sprite/number.h>
+#include "sprite/number.h"
 
 #include <cctype>
 

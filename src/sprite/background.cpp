@@ -1,4 +1,4 @@
-#include <sprite/background.h>
+#include "sprite/background.h"
 
 void Background::Render(const SDLRendererPtr &renderer) {
   if (!visible()) return;

@@ -1,4 +1,4 @@
-#include <sprite/group.h>
+#include "sprite/group.h"
 
 void Group::Render(const SDLRendererPtr &renderer) {
   if (visible()) {

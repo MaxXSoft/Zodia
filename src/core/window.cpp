@@ -1,8 +1,8 @@
-#include <graphic/window.h>
+#include "core/window.h"
 
 #include <stdexcept>
 
-#include <util/logger.h>
+#include "util/logger.h"
 
 int Window::instance_counter_ = 0;
 std::mutex Window::instance_mutex_;

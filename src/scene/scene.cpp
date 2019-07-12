@@ -1,4 +1,4 @@
-#include <scene/scene.h>
+#include "scene/scene.h"
 
 void Scene::Render(const SDLRendererPtr &renderer) {
   SDL_RenderClear(renderer.get());

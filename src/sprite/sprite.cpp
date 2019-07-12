@@ -1,8 +1,8 @@
-#include <graphic/sprite.h>
+#include "sprite/sprite.h"
 
 #include <stdexcept>
 
-#include <util/logger.h>
+#include "util/logger.h"
 
 void Sprite::InitTextureInfo() {
   if (!texture_) {

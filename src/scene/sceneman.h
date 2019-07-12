@@ -8,7 +8,7 @@
 
 class SceneManager {
  public:
-  SceneManager(Window *game) : game_(game), cur_index_(0) {}
+  SceneManager(Window &game) : game_(game), cur_index_(0) {}
 
   int AddScene(const GameScenePtr &scene) {
     scenes_.push_back(scene);
@@ -17,13 +17,13 @@ class SceneManager {
 
   void FrameBegin(KeyStatus key) { scenes_[cur_index_]->FrameBegin(key); }
 
-  void QuitGame() { game_->Quit(); }
-  void PauseGame(bool is_paused) { game_->set_paused(is_paused); }
-  void RenderGame() { game_->Render(); }
+  void QuitGame() { game_.Quit(); }
+  void PauseGame(bool is_paused) { game_.set_paused(is_paused); }
+  void RenderGame() { game_.Render(); }
   void SwitchScene(int id) {
     cur_index_ = id;
     scenes_[cur_index_]->Reset();
-    game_->set_scene(scenes_[cur_index_]->GetScene());
+    game_.set_scene(scenes_[cur_index_]->GetScene());
   }
 
   const ScenePtr &cur_scene() const {
@@ -31,7 +31,7 @@ class SceneManager {
   }
 
  private:
-  Window *game_;
+  Window &game_;
   std::vector<GameScenePtr> scenes_;
   int cur_index_;
 };

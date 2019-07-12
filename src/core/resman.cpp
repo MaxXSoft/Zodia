@@ -1,9 +1,9 @@
-#include <graphic/resman.h>
+#include "core/resman.h"
 
 #include <stdexcept>
 #include <SDL2/SDL_image.h>
 
-#include <util/logger.h>
+#include "util/logger.h"
 
 void ResManager::LoadImage(const std::string &name,
                            const std::string &path) {
