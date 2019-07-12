@@ -4,6 +4,65 @@
 
 #include "util/logger.h"
 
+namespace {
+
+KeyStatus GetKeyStatus(const std::uint8_t *key_map) {
+  KeyStatus status = 0;
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_A], kKeyA);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_B], kKeyB);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_C], kKeyC);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_D], kKeyD);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_E], kKeyE);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_F], kKeyF);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_G], kKeyG);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_H], kKeyH);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_I], kKeyI);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_J], kKeyJ);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_K], kKeyK);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_L], kKeyL);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_M], kKeyM);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_N], kKeyN);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_O], kKeyO);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_P], kKeyP);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_Q], kKeyQ);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_R], kKeyR);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_S], kKeyS);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_T], kKeyT);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_U], kKeyU);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_V], kKeyV);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_W], kKeyW);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_X], kKeyX);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_Y], kKeyY);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_Z], kKeyZ);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_0], kKey0);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_1], kKey1);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_2], kKey2);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_3], kKey3);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_4], kKey4);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_5], kKey5);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_6], kKey6);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_7], kKey7);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_8], kKey8);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_9], kKey9);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_BACKSPACE], kKeyBackspace);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_SPACE], kKeySpace);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_TAB], kKeyTab);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_RETURN], kKeyEnter);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_LSHIFT], kKeyShiftL);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_RSHIFT], kKeyShiftR);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_LCTRL], kKeyCtrlL);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_RCTRL], kKeyCtrlR);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_LALT], kKeyAltL);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_RALT], kKeyAltR);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_UP], kKeyArrowU);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_DOWN], kKeyArrowD);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_LEFT], kKeyArrowL);
+  SET_KEY_STATUS(status, key_map[SDL_SCANCODE_RIGHT], kKeyArrowR);
+  return status;
+}
+
+}  // namespace
+
 int Window::instance_counter_ = 0;
 std::mutex Window::instance_mutex_;
 
@@ -98,7 +157,8 @@ void Window::EventDispatch(const SDL_Event &event) {
 
 void Window::Render() {
   // frame begin
-  scene_man_.FrameBegin(SDL_GetKeyboardState(nullptr));
+  auto key_map = SDL_GetKeyboardState(nullptr);
+  scene_man_.FrameBegin(GetKeyStatus(key_map));
   // render current frame
   scene_man_.cur_scene()->Render(renderer_);
 }
