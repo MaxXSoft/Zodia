@@ -3,6 +3,6 @@
 
 #include <cstdint>
 
-using KeyStatus = std::uint32_t;
+using KeyStatus = const std::uint8_t *;
 
 #endif  // ZODIA_DEFINE_KEY_H_

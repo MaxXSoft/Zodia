@@ -7,13 +7,14 @@
 
 #include "define/sdltype.h"
 #include "core/resman.h"
-#include "scene/scene.h"
+#include "scene/sceneman.h"
 
 class Window {
  public:
   Window()
       : title_("Zodia"), width_(1280), height_(960),
         handle_events_(true), quit_flag_(false), paused_(false),
+        scene_man_(this),
         window_(nullptr, nullptr), renderer_(nullptr, nullptr) {
     NewInstance();
     Initialize();
@@ -21,6 +22,7 @@ class Window {
   Window(const std::string &title)
       : title_(title), width_(1280), height_(960),
         handle_events_(true), quit_flag_(false), paused_(false),
+        scene_man_(this),
         window_(nullptr, nullptr), renderer_(nullptr, nullptr) {
     NewInstance();
     Initialize();
@@ -28,6 +30,7 @@ class Window {
   Window(const std::string &title, int width, int height)
       : title_(title), width_(width), height_(height),
         handle_events_(true), quit_flag_(false), paused_(false),
+        scene_man_(this),
         window_(nullptr, nullptr), renderer_(nullptr, nullptr) {
     NewInstance();
     Initialize();
@@ -53,13 +56,12 @@ class Window {
     title_ = title;
     SDL_SetWindowTitle(window_.get(), title_.c_str());
   }
-  void set_scene(const ScenePtr &scene) { scene_ = scene; }
   void set_paused(bool paused) { paused_ = paused; }
   // getters
   const std::string &title() const { return title_; }
   int width() const { return width_; }
   int height() const { return height_; }
-  const ScenePtr &scene() const { return scene_; }
+  const SceneManager &scene_man() const { return scene_man_; }
 
  protected:  // event handlers
   // program events
@@ -115,10 +117,11 @@ class Window {
   std::string title_;
   const int width_, height_;
   bool handle_events_, quit_flag_, paused_;
+  // scene manager
+  SceneManager scene_man_;
   // other private variables
   SDLWindowPtr window_;
   SDLRendererPtr renderer_;
-  ScenePtr scene_;
 };
 
 using WindowPtr = std::shared_ptr<Window>;

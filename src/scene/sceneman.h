@@ -9,7 +9,7 @@
 // manager for all game scenes
 class SceneManager {
  public:
-  SceneManager(Window &game) : game_(game), cur_index_(0) {}
+  SceneManager(Window *game) : game_(game), cur_index_(0) {}
 
   // add a new game scene to manager
   int AddScene(const GameScenePtr &scene) {
@@ -19,19 +19,20 @@ class SceneManager {
 
   // will be called by game window
   // notify current game scene that new frame has begun
-  void FrameBegin(KeyStatus key) { scenes_[cur_index_]->FrameBegin(key); }
+  void FrameBegin(KeyStatus status) {
+    scenes_[cur_index_]->FrameBegin(status);
+  }
 
   // quit from game
-  void QuitGame() { game_.Quit(); }
+  void QuitGame() { game_->Quit(); }
   // pause current game
-  void PauseGame(bool is_paused) { game_.set_paused(is_paused); }
+  void PauseGame(bool is_paused) { game_->set_paused(is_paused); }
   // force rendering current scene
-  void RenderGame() { game_.Render(); }
+  void RenderGame() { game_->Render(); }
   // switch to specific game scene
   void SwitchScene(int id) {
     cur_index_ = id;
     scenes_[cur_index_]->Reset();
-    game_.set_scene(scenes_[cur_index_]->GetScene());
   }
 
   // getters
@@ -40,7 +41,7 @@ class SceneManager {
   }
 
  private:
-  Window &game_;
+  Window *game_;
   std::vector<GameScenePtr> scenes_;
   int cur_index_;
 };

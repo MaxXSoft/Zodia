@@ -12,7 +12,7 @@ public:
     // event when game scene was reset
     virtual void Reset() = 0;
     // event when there was a new frame
-    virtual void FrameBegin(KeyStatus key) = 0;
+    virtual void FrameBegin(KeyStatus status) = 0;
     // return pointer of scene in current game scene
     virtual const ScenePtr &GetScene() const = 0;
 };

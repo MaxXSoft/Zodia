@@ -97,7 +97,10 @@ void Window::EventDispatch(const SDL_Event &event) {
 }
 
 void Window::Render() {
-  if (scene_) scene_->Render(renderer_);
+  // frame begin
+  scene_man_.FrameBegin(SDL_GetKeyboardState(nullptr));
+  // render current frame
+  scene_man_.cur_scene()->Render(renderer_);
 }
 
 void Window::MainLoop() {
