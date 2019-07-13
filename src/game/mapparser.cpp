@@ -192,6 +192,8 @@ void MapParser::ParseScene(xml_node<> *node, SceneNum &scene_num) {
   for (const auto &i : layers) {
     for (const auto &it : i.second) {
       scene->GetScene()->AddSprite(order, it.first, it.second);
+      // register sprite
+      host_.RegisterSprite(it.first, id->value(), order);
     }
     ++order;
   }
@@ -202,6 +204,8 @@ void MapParser::ParseScene(xml_node<> *node, SceneNum &scene_num) {
   auto num = window_.scene_man().AddScene(scene);
   auto ret = scene_num.insert({id->value(), num});
   if (!ret.second) LOG_ERROR("scene id conflicted");
+  // register scene
+  host_.RegisterScene(id->value(), num);
 }
 
 void MapParser::ParseLayer(xml_node<> *node, Layers &layers) {
