@@ -7,7 +7,7 @@
 class Background : public Sprite {
  public:
   // arrangement of background image
-  enum class Arrange : char { Tile, Stretch, Fill };
+  enum class Arrange : char { Fill, Tile, Stretch };
 
   Background(const SDLTexturePtr &texture,
              Arrange arrange)
