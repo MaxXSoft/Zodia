@@ -12,3 +12,13 @@ void ResManager::LoadImage(const std::string &name,
   if (!image) LOG_ERROR("failed to load image");
   images_[name] = image;
 }
+
+void ResManager::LoadImage(const std::string &name,
+                           std::vector<std::uint8_t> &bytes) {
+  SDL_RWops *rw = SDL_RWFromMem(bytes.data(), bytes.size());
+  auto image = SDLTexturePtr(
+      IMG_LoadTexture_RW(renderer_.get(), rw, 1),
+      [](SDL_Texture *texture) { SDL_DestroyTexture(texture); });
+  if (!image) LOG_ERROR("failed to load image");
+  images_[name] = image;
+}

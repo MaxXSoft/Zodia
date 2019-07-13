@@ -3,6 +3,8 @@
 
 #include <map>
 #include <string>
+#include <vector>
+#include <cstdint>
 
 #include "define/sdltype.h"
 #include "util/logger.h"
@@ -14,6 +16,8 @@ class ResManager {
 
   // load image from file
   void LoadImage(const std::string &name, const std::string &path);
+  void LoadImage(const std::string &name,
+                 std::vector<std::uint8_t> &bytes);
   // get image by name
   SDLTexturePtr &GetImage(const std::string &name) {
     auto it = images_.find(name);
