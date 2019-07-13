@@ -8,6 +8,10 @@
 
 class Number : public Sprite {
  public:
+  Number(const SDLTexturePtr &texture)
+      : Sprite(texture) {
+    set_number(0);
+  }
   Number(const SDLTexturePtr &texture, int cx, int cy, int cw, int ch)
       : Sprite(texture, cx, cy, cw, ch) {
     set_number(0);
