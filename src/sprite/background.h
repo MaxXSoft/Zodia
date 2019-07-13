@@ -9,12 +9,12 @@ class Background : public Sprite {
   // arrangement of background image
   enum class Arrange : char { Tile, Stretch, Fill };
 
-  Background(ParentPtr parent, const SDLTexturePtr &texture,
+  Background(const SDLTexturePtr &texture,
              Arrange arrange)
-      : Sprite(parent, texture), arrange_(arrange) {}
-  Background(ParentPtr parent, const SDLTexturePtr &texture,
+      : Sprite(texture), arrange_(arrange) {}
+  Background(const SDLTexturePtr &texture,
              int cx, int cy, int cw, int ch, Arrange arrange)
-      : Sprite(parent, texture, cx, cy, cw, ch), arrange_(arrange) {}
+      : Sprite(texture, cx, cy, cw, ch), arrange_(arrange) {}
 
   void Render(const SDLRendererPtr &renderer) override;
 

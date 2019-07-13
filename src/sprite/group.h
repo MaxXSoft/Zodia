@@ -12,7 +12,7 @@ class Group : public Sprite, public ParentInterface {
  public:
   using Callback = std::function<void(const SpritePtr &)>;
 
-  Group(ParentPtr parent) : Sprite(parent) { set_visible(true); }
+  Group() { set_visible(true); }
 
   // create a new sprite in group
   template <typename T, typename... Args>
@@ -23,6 +23,7 @@ class Group : public Sprite, public ParentInterface {
 
   // add an existing sprite to group
   void AddSprite(const SpritePtr &sprite) {
+    sprite->set_parent(this);
     sprites_.push_back({sprite, true});
   }
 

@@ -26,6 +26,7 @@ class Scene : public ParentInterface {
   // add an existing sprite to scene
   void AddSprite(int layer, const std::string &name,
                  const SpritePtr &sprite) {
+    sprite->set_parent(this);
     sprites_[layer][name] = {sprite, true};
   }
 

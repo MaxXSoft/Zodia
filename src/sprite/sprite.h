@@ -12,17 +12,16 @@ using SpritePtr = std::shared_ptr<Sprite>;
 // base class of all sprites in scene
 class Sprite {
  public:
-  Sprite(ParentPtr parent)
-      : parent_(parent), is_clipped_(false), visible_(false),
+  Sprite()
+      : parent_(nullptr), is_clipped_(false), visible_(false),
         texture_(nullptr), x_(0), y_(0) {}
-  Sprite(ParentPtr parent, const SDLTexturePtr &texture)
-      : parent_(parent), is_clipped_(false), visible_(true),
+  Sprite(const SDLTexturePtr &texture)
+      : parent_(nullptr), is_clipped_(false), visible_(true),
         texture_(texture), x_(0), y_(0) {
     InitTextureInfo();
   }
-  Sprite(ParentPtr parent, const SDLTexturePtr &texture, int cx, int cy,
-         int cw, int ch)
-      : parent_(parent), is_clipped_(true), visible_(true),
+  Sprite(const SDLTexturePtr &texture, int cx, int cy, int cw, int ch)
+      : parent_(nullptr), is_clipped_(true), visible_(true),
         clip_({cx, cy, cw, ch}), texture_(texture), x_(0), y_(0) {
     InitTextureInfo();
   }
@@ -34,6 +33,7 @@ class Sprite {
   virtual bool IsCollide(const Sprite &sprite);
 
   // setters
+  void set_parent(ParentPtr parent) { parent_ = parent; }
   void set_x(int x) { x_ = x; }
   void set_y(int y) { y_ = y; }
   void set_width(int width) { width_ = width; }
