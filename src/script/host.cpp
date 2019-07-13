@@ -55,10 +55,13 @@ void ScriptHost::CallFunction(const std::string &name) {
 }
 
 void ScriptHost::RegisterScene(const std::string &name, int id) {
-  //
+  scene_map_[name] = {id, {}};
 }
 
 void ScriptHost::RegisterSprite(const std::string &name,
                                 const std::string &scene, int layer_id) {
-  //
+  auto it = scene_map_.find(scene);
+  if (it == scene_map_.end()) LOG_ERROR("scene does not exist");
+  auto ret = it->second.sprite_info.insert({name, layer_id});
+  if (!ret.second) LOG_ERROR("sprite id conflicted");
 }
