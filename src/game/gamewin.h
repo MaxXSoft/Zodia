@@ -8,7 +8,7 @@
 
 class GameWindow : public Window {
  public:
-  GameWindow() {}
+  GameWindow() : host_(scene_man()) {}
 
   // load map from file
   void LoadMap(const std::string &file);
