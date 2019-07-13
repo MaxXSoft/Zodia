@@ -18,4 +18,11 @@
 #endif
 #endif
 
+#if defined(_WIN32) || defined(__WIN32__) || defined(_MSC_VER)
+#define UTIL_OS_WINDOWS
+#ifdef _MSC_VER
+#define UTIL_OS_WIN_VS
+#endif
+#endif
+
 #endif  // ZODIA_UTIL_OS_H_
