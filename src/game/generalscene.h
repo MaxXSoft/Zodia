@@ -14,8 +14,13 @@ class GeneralScene : public GameSceneInterface {
   }
 
   // event handlers
-  void Reset() override;
-  void FrameBegin(KeyStatus status) override;
+  void Reset() override {
+    if (!reset_handler_.empty()) host_.CallFunction(reset_handler_);
+  }
+
+  void FrameBegin(KeyStatus status) override {
+    if (!begin_handler_.empty()) host_.CallFunction(begin_handler_);
+  }
 
   const ScenePtr &GetScene() const override { return scene_; }
 
@@ -23,14 +28,14 @@ class GeneralScene : public GameSceneInterface {
   void set_reset_handler(const std::string &name) {
     reset_handler_ = name;
   }
-  void set_frame_begin_handler(const std::string &name) {
-    frame_begin_handler_ = name;
+  void set_begin_handler(const std::string &name) {
+    begin_handler_ = name;
   }
 
  private:
   ScriptHost &host_;
   ScenePtr scene_;
-  std::string reset_handler_, frame_begin_handler_;
+  std::string reset_handler_, begin_handler_;
 };
 
 #endif  // ZODIA_GAME_GENERALSCENE_H_

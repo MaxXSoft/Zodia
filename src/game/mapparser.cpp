@@ -178,8 +178,8 @@ void MapParser::ParseScene(xml_node<> *node, SceneNum &scene_num) {
   // get attributes
   auto id = node->first_attribute("id");
   if (!id) LOG_ERROR("scene must have id");
-  auto reset = node->first_attribute("reset");
-  auto frame_begin = node->first_attribute("frame-begin");
+  auto reset = node->first_attribute("onreset");
+  auto begin = node->first_attribute("onbegin");
   // traversal all layers
   Layers layers;
   for (auto i = node->first_node("layer"); i; i = i->next_sibling()) {
@@ -197,7 +197,7 @@ void MapParser::ParseScene(xml_node<> *node, SceneNum &scene_num) {
   }
   // set handlers
   if (reset) scene->set_reset_handler(reset->value());
-  if (frame_begin) scene->set_frame_begin_handler(frame_begin->value());
+  if (begin) scene->set_begin_handler(begin->value());
   // add scene to manager
   auto num = window_.scene_man().AddScene(scene);
   auto ret = scene_num.insert({id->value(), num});

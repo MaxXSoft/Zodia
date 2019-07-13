@@ -24,6 +24,9 @@ class ScriptHost {
   void AddInstance(const std::vector<std::uint8_t> &buffer);
   // compile source code to bytecode
   std::vector<std::uint8_t> CompileSource(const std::string &source);
+  
+  // call the function in script by name
+  void CallFunction(const std::string &name);
 
  private:
   std::vector<ionia::vm::VM> vms_;
