@@ -49,3 +49,16 @@ std::vector<std::uint8_t> ScriptHost::CompileSource(
   // generate bytecode
   return comp.GenerateBytecode();
 }
+
+void ScriptHost::CallFunction(const std::string &name) {
+  //
+}
+
+void ScriptHost::RegisterScene(const std::string &name, int id) {
+  //
+}
+
+void ScriptHost::RegisterSprite(const std::string &name,
+                                const std::string &scene, int layer_id) {
+  //
+}
