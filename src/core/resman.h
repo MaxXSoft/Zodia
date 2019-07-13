@@ -5,6 +5,7 @@
 #include <string>
 
 #include "define/sdltype.h"
+#include "util/logger.h"
 
 // resource manager
 class ResManager {
@@ -15,7 +16,9 @@ class ResManager {
   void LoadImage(const std::string &name, const std::string &path);
   // get image by name
   SDLTexturePtr &GetImage(const std::string &name) {
-      return images_[name];
+    auto it = images_.find(name);
+    if (it == images_.end()) LOG_ERROR("invalid image name");
+    return it->second;
   }
 
   // clear all images
