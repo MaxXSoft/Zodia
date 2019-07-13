@@ -35,11 +35,11 @@ class MapParser {
   // read content of input stream to RapidXml
   void ReadFile();
 
-  void ParseResources();
+  void ParseResources(rapidxml::xml_node<> *node);
   void ParseImage(rapidxml::xml_node<> *node, const std::string &base);
-  void ParseScripts();
+  void ParseScripts(rapidxml::xml_node<> *node);
   void ParseScript(rapidxml::xml_node<> *node, const std::string &base);
-  void ParseScenes();
+  void ParseScenes(rapidxml::xml_node<> *node);
   void ParseScene(rapidxml::xml_node<> *node, SceneNum &scene_num);
   void ParseLayer(rapidxml::xml_node<> *node, Layers &layers);
   void ParseSprite(rapidxml::xml_node<> *node, Sprites &sprites);

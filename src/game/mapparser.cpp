@@ -16,6 +16,8 @@
 #include "util/file.h"
 #include "util/base64.h"
 
+using namespace rapidxml;
+
 namespace {
 
 inline bool IsValidMap(const std::string &xmlns) {
@@ -97,21 +99,17 @@ void MapParser::ReadFile() {
   if (!root_) LOG_ERROR("invalid map file, root node not found");
 }
 
-void MapParser::ParseResources() {
-  // get root node of resources
-  auto resources = root_->first_node("resources");
-  if (!resources) LOG_ERROR("<resources> not found");
+void MapParser::ParseResources(xml_node<> *node) {
   // get base path
-  auto base = resources->first_attribute("base");
+  auto base = node->first_attribute("base");
   auto path = GetPath(file_, base ? base->value() : nullptr);
   // traversal all images
-  for (auto i = resources->first_node(); i; i->next_sibling()) {
+  for (auto i = node->first_node(); i; i->next_sibling()) {
     ParseImage(i, path);
   }
 }
 
-void MapParser::ParseImage(rapidxml::xml_node<> *node,
-                           const std::string &base) {
+void MapParser::ParseImage(xml_node<> *node, const std::string &base) {
   // get id
   auto id = node->first_attribute("id");
   if (!id) LOG_ERROR("expected resource identifier");
@@ -130,21 +128,17 @@ void MapParser::ParseImage(rapidxml::xml_node<> *node,
   }
 }
 
-void MapParser::ParseScripts() {
-  // get root node of resources
-  auto scripts = root_->first_node("scripts");
-  if (!scripts) LOG_ERROR("<scripts> not found");
+void MapParser::ParseScripts(xml_node<> *node) {
   // get base path
-  auto base = scripts->first_attribute("base");
+  auto base = node->first_attribute("base");
   auto path = GetPath(file_, base ? base->value() : nullptr);
   // traversal all images
-  for (auto i = scripts->first_node(); i; i->next_sibling()) {
+  for (auto i = node->first_node(); i; i->next_sibling()) {
     ParseScript(i, path);
   }
 }
 
-void MapParser::ParseScript(rapidxml::xml_node<> *node,
-                            const std::string &base) {
+void MapParser::ParseScript(xml_node<> *node, const std::string &base) {
   if (!std::strcmp(node->name(), "script")) {
     // add script from file
     auto source = node->first_attribute("source");
@@ -161,17 +155,14 @@ void MapParser::ParseScript(rapidxml::xml_node<> *node,
   }
 }
 
-void MapParser::ParseScenes() {
-  // get root node of scenes
-  auto scenes = root_->first_node("scenes");
-  if (!scenes) LOG_ERROR("<scenes> not found");
+void MapParser::ParseScenes(xml_node<> *node) {
   // traversal all scene nodes
   SceneNum scene_num;
-  for (auto i = scenes->first_node("scene"); i; i = i->next_sibling()) {
+  for (auto i = node->first_node("scene"); i; i = i->next_sibling()) {
     ParseScene(i, scene_num);
   }
   // set default scene
-  auto def_id = scenes->first_attribute("default");
+  auto def_id = node->first_attribute("default");
   if (!def_id) {
     auto it = scene_num.find(def_id->value());
     if (it == scene_num.end()) {
@@ -183,8 +174,7 @@ void MapParser::ParseScenes() {
   }
 }
 
-void MapParser::ParseScene(rapidxml::xml_node<> *node,
-                           SceneNum &scene_num) {
+void MapParser::ParseScene(xml_node<> *node, SceneNum &scene_num) {
   // get attributes
   auto id = node->first_attribute("id");
   if (!id) LOG_ERROR("scene must have id");
@@ -196,7 +186,7 @@ void MapParser::ParseScene(rapidxml::xml_node<> *node,
     ParseLayer(i, layers);
   }
   // create game scene
-  auto scene = std::make_shared<GeneralScene>(layers.size());
+  auto scene = std::make_shared<GeneralScene>(host_, layers.size());
   // add layers to scene
   int order = 0;
   for (const auto &i : layers) {
@@ -214,7 +204,7 @@ void MapParser::ParseScene(rapidxml::xml_node<> *node,
   if (!ret.second) LOG_ERROR("scene id conflicted");
 }
 
-void MapParser::ParseLayer(rapidxml::xml_node<> *node, Layers &layers) {
+void MapParser::ParseLayer(xml_node<> *node, Layers &layers) {
   // get order
   auto order = node->first_attribute("order");
   int order_val;
@@ -230,7 +220,7 @@ void MapParser::ParseLayer(rapidxml::xml_node<> *node, Layers &layers) {
   }
 }
 
-void MapParser::ParseSprite(rapidxml::xml_node<> *node, Sprites &sprites) {
+void MapParser::ParseSprite(xml_node<> *node, Sprites &sprites) {
   // get general attributes
   auto id = node->first_attribute("id");
   if (!id) LOG_ERROR("sprite must have id");
@@ -258,7 +248,7 @@ void MapParser::ParseSprite(rapidxml::xml_node<> *node, Sprites &sprites) {
   if (!ret.second) LOG_ERROR("sprite id conflicted");
 }
 
-MapParser::Bytes MapParser::ParseRaw(rapidxml::xml_node<> *node) {
+MapParser::Bytes MapParser::ParseRaw(xml_node<> *node) {
   // get type
   auto type = node->first_attribute("type");
   if (!type) LOG_ERROR("<raw> node must have type");
@@ -275,7 +265,7 @@ MapParser::Bytes MapParser::ParseRaw(rapidxml::xml_node<> *node) {
   }
 }
 
-SpritePtr MapParser::ParseSprite(rapidxml::xml_node<> *node) {
+SpritePtr MapParser::ParseSprite(xml_node<> *node) {
   SpritePtr sprite;
   // get attributes
   auto texture = node->first_attribute("texture");
@@ -308,7 +298,7 @@ SpritePtr MapParser::ParseSprite(rapidxml::xml_node<> *node) {
   return sprite;
 }
 
-SpritePtr MapParser::ParseBackground(rapidxml::xml_node<> *node) {
+SpritePtr MapParser::ParseBackground(xml_node<> *node) {
   SpritePtr sprite;
   // get attributes
   auto texture = node->first_attribute("texture");
@@ -332,7 +322,7 @@ SpritePtr MapParser::ParseBackground(rapidxml::xml_node<> *node) {
   return sprite;
 }
 
-SpritePtr MapParser::ParseNumber(rapidxml::xml_node<> *node) {
+SpritePtr MapParser::ParseNumber(xml_node<> *node) {
   std::shared_ptr<Number> sprite;
   // get attributes
   auto texture = node->first_attribute("texture");
@@ -355,7 +345,7 @@ SpritePtr MapParser::ParseNumber(rapidxml::xml_node<> *node) {
   return sprite;
 }
 
-SpritePtr MapParser::ParseGroup(rapidxml::xml_node<> *node) {
+SpritePtr MapParser::ParseGroup(xml_node<> *node) {
   // traversal all sprites
   Sprites sprites;
   for (auto i = node->first_node(); i; i->next_sibling()) {
@@ -374,9 +364,7 @@ void MapParser::Reset() {
   window_.res_man().Clear();
   window_.scene_man().Clear();
   host_.Clear();
-  // reset XML object
-  doc_.clear();
-  // read file to XML object
+  // read map file
   ReadFile();
 }
 
@@ -395,7 +383,16 @@ void MapParser::Parse() {
     auto sz = GetIntPair(size->value());
     window_.set_size(sz.first, sz.second);
   }
-  // parse the rest
-  ParseResources();
-  ParseScenes();
+  // parse resources
+  auto resources = root_->first_node("resources");
+  if (!resources) LOG_ERROR("<resources> not found");
+  ParseResources(resources);
+  // parse scripts
+  auto scripts = root_->first_node("scripts");
+  if (!scripts) LOG_ERROR("<scripts> not found");
+  ParseScripts(scripts);
+  // parse scenes
+  auto scenes = root_->first_node("scenes");
+  if (!scenes) LOG_ERROR("<scenes> not found");
+  ParseScenes(scenes);
 }
