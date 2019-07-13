@@ -54,7 +54,13 @@ class Window {
     title_ = title;
     SDL_SetWindowTitle(window_.get(), title_.c_str());
   }
+  void set_size(int width, int height) {
+    width_ = width;
+    height_ = height;
+    SDL_SetWindowSize(window_.get(), width_, height_);
+  }
   void set_paused(bool paused) { paused_ = paused; }
+
   // getters
   const std::string &title() const { return title_; }
   int width() const { return width_; }
@@ -115,7 +121,7 @@ class Window {
   static std::mutex instance_mutex_;
   // properties
   std::string title_;
-  const int width_, height_;
+  int width_, height_;
   bool handle_events_, quit_flag_, paused_;
   // managers
   ResManager res_man_;
