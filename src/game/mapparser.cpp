@@ -49,7 +49,7 @@ inline bool GetBool(const char *str) {
   return !std::strcmp(str, "1") || !std::strcmp(str, "true");
 }
 
-inline std::pair<int, int> GetPosition(const char *str) {
+inline std::pair<int, int> GetIntPair(const char *str) {
   int x, y;
   std::sscanf(str, "%d,%d", &x, &y);
   return {x, y};
@@ -287,7 +287,7 @@ SpritePtr MapParser::ParseSprite(rapidxml::xml_node<> *node) {
   std::pair<int, int> pos;
   SDLRect cl, bd;
   if (texture) text = window_.res_man().GetImage(texture->value());
-  if (position) pos = GetPosition(position->value());
+  if (position) pos = GetIntPair(position->value());
   if (clip) cl = GetRect(clip->value());
   if (bounding) bd = GetRect(bounding->value());
   // create sprite
@@ -387,9 +387,14 @@ void MapParser::Parse() {
   if (!IsValidMap(xmlns->value())) {
     LOG_ERROR("trying to load a newer version map file");
   }
-  // set window title
+  // set window title & size
   auto title = root_->first_attribute("title");
   if (title) window_.set_title(title->value());
+  auto size = root_->first_attribute("size");
+  if (size) {
+    auto sz = GetIntPair(size->value());
+    window_.set_size(sz.first, sz.second);
+  }
   // parse the rest
   ParseResources();
   ParseScenes();
