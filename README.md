@@ -1,6 +1,6 @@
 # Zodia
 
-Zodia is a naive 2D game engine, based on SDL2 and Ionia.
+Zodia is a toy 2D game engine, based on SDL2 and Ionia.
 
 ## Details
 
