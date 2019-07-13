@@ -3,6 +3,14 @@
 
 #include <ostream>
 #include <string>
+#include <stdexcept>
+
+// macro for logging errors
+#define LOG_ERROR(msg)                \
+    do {                              \
+      Logger::LogError(__func__);     \
+      throw std::runtime_error(msg);  \
+    } while (0)
 
 class Logger {
  public:

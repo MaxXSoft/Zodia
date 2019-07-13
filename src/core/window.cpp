@@ -1,7 +1,5 @@
 #include "core/window.h"
 
-#include <stdexcept>
-
 #include "util/logger.h"
 
 namespace {
@@ -71,8 +69,7 @@ void Window::NewInstance() {
   // check if need to initialize SDL system
   if (!instance_counter_) {
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-      Logger::LogError("Window::NewInstance");
-      throw std::runtime_error("failed to initialize window");
+      LOG_ERROR("failed to initialize window");
     }
     Logger::LogDebug("SDL has been initialized");
   }
@@ -110,8 +107,7 @@ void Window::Initialize() {
   }
   // error occurred
   ReleaseInstance();
-  Logger::LogError("Window::Initialize");
-  throw std::runtime_error("failed to initialize window");
+  LOG_ERROR("failed to initialize window");
 }
 
 void Window::EventDispatch(const SDL_Event &event) {
