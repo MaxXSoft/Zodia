@@ -148,7 +148,7 @@ void Window::EventDispatch(const SDL_Event &event) {
       break;
     }
     case SDL_MOUSEWHEEL: {
-      MouseWhellEvent(event.wheel.x, event.wheel.y, event.wheel.direction);
+      MouseWheelEvent(event.wheel.x, event.wheel.y, event.wheel.direction);
       break;
     }
     default: CustomEvent(event); break;

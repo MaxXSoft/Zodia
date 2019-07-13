@@ -86,7 +86,7 @@ class Window {
   virtual void MouseUpEvent(std::uint8_t button, std::uint8_t state,
                             std::uint8_t clicks, std::int32_t x,
                             std::int32_t y) {}
-  virtual void MouseWhellEvent(std::int32_t x, std::int32_t y,
+  virtual void MouseWheelEvent(std::int32_t x, std::int32_t y,
                                std::uint32_t direction) {}
   // other events
   virtual void CustomEvent(const SDL_Event &event) {}
