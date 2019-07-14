@@ -29,18 +29,7 @@ inline bool IsValidMap(const std::string &xmlns) {
   int major, minor, patch;
   std::sscanf(version.c_str(), "%d.%d.%d", &major, &minor, &patch);
   // check version
-  if (major > APP_VERSION_MAJOR) {
-    return false;
-  }
-  else if (major == APP_VERSION_MAJOR) {
-    if (minor > APP_VERSION_MINOR) {
-      return false;
-    }
-    else if (minor == APP_VERSION_MINOR) {
-      if (patch > APP_VERSION_PATCH) return false;
-    }
-  }
-  return true;
+  return CompareVersion(major, minor, patch) <= 0;
 }
 
 inline int GetInt(const char *str) {
