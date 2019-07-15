@@ -9,10 +9,13 @@
 #include "ionia/src/vm/vm.h"
 #include "scene/sceneman.h"
 #include "define/key.h"
+#include "script/runtime.h"
 
 class ScriptHost {
  public:
-  ScriptHost(SceneManager &scene_man) : scene_man_(scene_man) { Clear(); }
+  ScriptHost(const SceneManager &scene_man) : scene_man_(scene_man) {
+    InitRuntimes();
+  }
 
   // clear all stored information
   void Clear() {
@@ -38,6 +41,9 @@ class ScriptHost {
   // call handler of 'FrameBegin' event in game scene
   void CallBeginHandler(const std::string &name, KeyStatus key);
 
+  // getters
+  const SceneManager &scene_man() const { return scene_man_; }
+
  private:
   // information of sprite in GameScene
   using SpriteInfo = std::unordered_map<std::string, int>;
@@ -50,7 +56,11 @@ class ScriptHost {
   struct VMInfo {
     ionia::vm::VM vm;
     ionia::vm::Value handler;
+    std::string last_sym;
   };
+
+  // initialize all of runtime libraries
+  void InitRuntimes();
 
   // push a new VM instance back to 'vms_'
   ionia::vm::VM &PushBackNewVM();
@@ -58,14 +68,17 @@ class ScriptHost {
   bool SymErrorHandler(int id, const std::string &sym,
                        ionia::vm::Value &val);
   // external function in all VM instances
-  bool VMHandler(ionia::vm::VM::ValueStack &vals, ionia::vm::Value &ret);
+  bool VMHandler(int id, ionia::vm::VM::ValueStack &vals,
+                 ionia::vm::Value &ret);
   // call the function in script by name
   void CallFunction(const std::string &name,
                     const std::vector<ionia::vm::Value> &args,
                     ionia::vm::Value &ret);
 
   // reference of scene manager in game window
-  SceneManager &scene_man_;
+  const SceneManager &scene_man_;
+  // all runtime libraries
+  std::unordered_map<std::string, RuntimePtr> runtimes_;
   // all VM instances
   std::vector<VMInfo> vms_;
   // cache for mapping function name to VM id

@@ -12,18 +12,22 @@
 
 using namespace ionia;
 
+void ScriptHost::InitRuntimes() {
+  // TODO
+}
+
 vm::VM &ScriptHost::PushBackNewVM() {
   using namespace std::placeholders;
   // create new VM instance
   vms_.emplace_back();
   auto &info = vms_.back();
+  auto vm_id = vms_.size() - 1;
   // set handler of current instance
-  auto handler = std::bind(&ScriptHost::SymErrorHandler, this,
-                           vms_.size() - 1, _1, _2);
-  info.vm.set_sym_error_handler(handler);
+  auto hand = std::bind(&ScriptHost::SymErrorHandler, this, vm_id, _1, _2);
+  info.vm.set_sym_error_handler(hand);
   // set up external function
-  auto ext_fun = std::bind(&ScriptHost::VMHandler, this, _1, _2);
-  if (!info.vm.RegisterFunction("zodia", ext_fun, info.handler)) {
+  auto ext_fun = std::bind(&ScriptHost::VMHandler, this, vm_id, _1, _2);
+  if (!info.vm.RegisterFunction("zodia:handler", ext_fun, info.handler)) {
     LOG_ERROR("failed to create new VM instance");
   }
   return info.vm;
@@ -31,11 +35,28 @@ vm::VM &ScriptHost::PushBackNewVM() {
 
 bool ScriptHost::SymErrorHandler(int id, const std::string &sym,
                                  vm::Value &val) {
-  //
+  if (sym.find('.') != std::string::npos) {
+    // store the symbol name
+    vms_[id].last_sym = sym;
+    // return VM handler
+    val = vms_[id].handler;
+    return true;
+  }
+  return false;
 }
 
-bool ScriptHost::VMHandler(vm::VM::ValueStack &vals, vm::Value &ret) {
-  //
+bool ScriptHost::VMHandler(int id, vm::VM::ValueStack &vals,
+                           vm::Value &ret) {
+  const auto &sym = vms_[id].last_sym;
+  // get splitted path
+  auto dot_pos = sym.find('.');
+  auto lib_name = sym.substr(0, dot_pos);
+  auto path = sym.substr(dot_pos + 1);
+  // get pointer of library
+  auto it = runtimes_.find(lib_name);
+  if (it == runtimes_.end()) LOG_ERROR("invalid runtime library name");
+  // call handler
+  return it->second->Handler(path, vals, ret);
 }
 
 void ScriptHost::CallFunction(const std::string &name,
@@ -56,7 +77,7 @@ void ScriptHost::CallFunction(const std::string &name,
       }
     }
     // function not found
-    LOG_ERROR("calling an invalid function");
+    LOG_ERROR("invalid script function call");
   }
 }
 
@@ -118,5 +139,7 @@ void ScriptHost::CallResetHandler(const std::string &name) {
 }
 
 void ScriptHost::CallBeginHandler(const std::string &name, KeyStatus key) {
-  //
+  vm::Value ret;
+  // TODO: fix this compromise method
+  CallFunction(name, {{key & 0xffffffff}, {key >> 32}}, ret);
 }
