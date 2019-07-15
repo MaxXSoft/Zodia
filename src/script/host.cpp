@@ -3,6 +3,7 @@
 #include <sstream>
 #include <fstream>
 #include <iterator>
+#include <cassert>
 
 #include "ionia/src/front/lexer.h"
 #include "ionia/src/front/parser.h"
@@ -10,6 +11,54 @@
 #include "util/logger.h"
 
 using namespace ionia;
+
+vm::VM &ScriptHost::PushBackNewVM() {
+  using namespace std::placeholders;
+  // create new VM instance
+  vms_.emplace_back();
+  auto &info = vms_.back();
+  // set handler of current instance
+  auto handler = std::bind(&ScriptHost::SymErrorHandler, this,
+                           vms_.size() - 1, _1, _2);
+  info.vm.set_sym_error_handler(handler);
+  // set up external function
+  auto ext_fun = std::bind(&ScriptHost::VMHandler, this, _1, _2);
+  if (!info.vm.RegisterFunction("zodia", ext_fun, info.handler)) {
+    LOG_ERROR("failed to create new VM instance");
+  }
+  return info.vm;
+}
+
+bool ScriptHost::SymErrorHandler(int id, const std::string &sym,
+                                 vm::Value &val) {
+  //
+}
+
+bool ScriptHost::VMHandler(vm::VM::ValueStack &vals, vm::Value &ret) {
+  //
+}
+
+void ScriptHost::CallFunction(const std::string &name,
+                              const std::vector<vm::Value> &args,
+                              vm::Value &ret) {
+  // check if is already cached
+  auto it = func_id_map_.find(name);
+  if (it != func_id_map_.end()) {
+    auto success = vms_[it->second].vm.CallFunction(name, args, ret);
+    assert(success);
+  }
+  else {
+    // find out the correct VM id and store to cache
+    for (int i = 0; i < vms_.size(); ++i) {
+      if (vms_[i].vm.CallFunction(name, args, ret)) {
+        func_id_map_[name] = i;
+        return;
+      }
+    }
+    // function not found
+    LOG_ERROR("calling an invalid function");
+  }
+}
 
 void ScriptHost::AddInstance(const std::string &file) {
   // read file to buffer
@@ -22,14 +71,14 @@ void ScriptHost::AddInstance(const std::string &file) {
 }
 
 void ScriptHost::AddInstance(const std::vector<std::uint8_t> &buffer) {
+  auto &vm = PushBackNewVM();
   // try to load as bytecode
-  vms_.emplace_back();
-  if (!vms_.back().LoadProgram(buffer)) {
+  if (!vm.LoadProgram(buffer)) {
     // compile and try again
     auto buff = buffer;
     buff.push_back('\0');
     buff = CompileSource(reinterpret_cast<char *>(buff.data()));
-    if (!vms_.back().LoadProgram(buff)) LOG_ERROR("invalid script");
+    if (!vm.LoadProgram(buff)) LOG_ERROR("invalid script");
   }
 }
 
@@ -50,11 +99,8 @@ std::vector<std::uint8_t> ScriptHost::CompileSource(
   return comp.GenerateBytecode();
 }
 
-void ScriptHost::CallFunction(const std::string &name) {
-  //
-}
-
 void ScriptHost::RegisterScene(const std::string &name, int id) {
+  assert(scene_map_.find(name) == scene_map_.end());
   scene_map_[name] = {id, {}};
 }
 
@@ -64,4 +110,13 @@ void ScriptHost::RegisterSprite(const std::string &name,
   if (it == scene_map_.end()) LOG_ERROR("scene does not exist");
   auto ret = it->second.sprite_info.insert({name, layer_id});
   if (!ret.second) LOG_ERROR("sprite id conflicted");
+}
+
+void ScriptHost::CallResetHandler(const std::string &name) {
+  vm::Value ret;
+  CallFunction(name, {}, ret);
+}
+
+void ScriptHost::CallBeginHandler(const std::string &name, KeyStatus key) {
+  //
 }
