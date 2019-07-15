@@ -25,4 +25,8 @@
 #endif
 #endif
 
+#ifdef __APPLE__
+#define UTIL_OS_MACOS
+#endif
+
 #endif  // ZODIA_UTIL_OS_H_
