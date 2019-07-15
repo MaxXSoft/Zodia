@@ -12,10 +12,6 @@
 
 using namespace ionia;
 
-void ScriptHost::InitRuntimes() {
-  // TODO
-}
-
 vm::VM &ScriptHost::PushBackNewVM() {
   using namespace std::placeholders;
   // create new VM instance

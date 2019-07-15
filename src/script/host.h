@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <memory>
 #include <cstdint>
 
 #include "ionia/src/vm/vm.h"
@@ -13,15 +14,20 @@
 
 class ScriptHost {
  public:
-  ScriptHost(const SceneManager &scene_man) : scene_man_(scene_man) {
-    InitRuntimes();
-  }
+  ScriptHost(const SceneManager &scene_man) : scene_man_(scene_man) {}
 
   // clear all stored information
   void Clear() {
     vms_.clear();
     func_id_map_.clear();
     scene_map_.clear();
+  }
+
+  // add new runtime library to host
+  template <typename T>
+  void AddNewRuntime() {
+    auto rt = std::make_unique<T>(*this);
+    runtimes_.insert({rt->name(), std::move(rt)});
   }
 
   // add a new VM instance (from file)
@@ -58,9 +64,6 @@ class ScriptHost {
     ionia::vm::Value handler;
     std::string last_sym;
   };
-
-  // initialize all of runtime libraries
-  void InitRuntimes();
 
   // push a new VM instance back to 'vms_'
   ionia::vm::VM &PushBackNewVM();
