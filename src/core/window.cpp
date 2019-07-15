@@ -1,6 +1,7 @@
 #include "core/window.h"
 
 #include "util/logger.h"
+#include "util/os.h"
 
 namespace {
 
@@ -90,12 +91,19 @@ void Window::ReleaseInstance() {
 
 void Window::Initialize() {
   // initialize window
-  // TODO: window size!
+#ifdef UTIL_OS_MACOS
   window_ = SDLWindowPtr(
       SDL_CreateWindow(title_.c_str(), SDL_WINDOWPOS_CENTERED,
                        SDL_WINDOWPOS_CENTERED, width_ / 2, height_ / 2,
                        SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI),
       SDL_DestroyWindow);
+#else
+  window_ = SDLWindowPtr(
+      SDL_CreateWindow(title_.c_str(), SDL_WINDOWPOS_CENTERED,
+                       SDL_WINDOWPOS_CENTERED, width_, height_,
+                       SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI),
+      SDL_DestroyWindow);
+#endif
   if (window_) {
     // initialize renderer
     renderer_ =
