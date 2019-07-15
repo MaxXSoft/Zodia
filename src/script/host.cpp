@@ -12,23 +12,6 @@
 
 using namespace ionia;
 
-vm::VM &ScriptHost::PushBackNewVM() {
-  using namespace std::placeholders;
-  // create new VM instance
-  vms_.emplace_back();
-  auto &info = vms_.back();
-  auto vm_id = vms_.size() - 1;
-  // set handler of current instance
-  auto hand = std::bind(&ScriptHost::SymErrorHandler, this, vm_id, _1, _2);
-  info.vm.set_sym_error_handler(hand);
-  // set up external function
-  auto ext_fun = std::bind(&ScriptHost::VMHandler, this, vm_id, _1, _2);
-  if (!info.vm.RegisterFunction("zodia:handler", ext_fun, info.handler)) {
-    LOG_ERROR("failed to create new VM instance");
-  }
-  return info.vm;
-}
-
 bool ScriptHost::SymErrorHandler(int id, const std::string &sym,
                                  vm::Value &val) {
   if (sym.find('.') != std::string::npos) {
@@ -53,6 +36,23 @@ bool ScriptHost::VMHandler(int id, vm::VM::ValueStack &vals,
   if (it == runtimes_.end()) LOG_ERROR("invalid runtime library name");
   // call handler
   return it->second->Handler(path, vals, ret);
+}
+
+vm::VM &ScriptHost::PushBackNewVM() {
+  using namespace std::placeholders;
+  // create new VM instance
+  vms_.emplace_back();
+  auto &info = vms_.back();
+  auto vm_id = vms_.size() - 1;
+  // set handler of current instance
+  auto hand = std::bind(&ScriptHost::SymErrorHandler, this, vm_id, _1, _2);
+  info.vm.set_sym_error_handler(hand);
+  // set up external function
+  auto ext_fun = std::bind(&ScriptHost::VMHandler, this, vm_id, _1, _2);
+  if (!info.vm.RegisterFunction("zodia:handler", ext_fun, info.handler)) {
+    LOG_ERROR("failed to create new VM instance");
+  }
+  return info.vm;
 }
 
 void ScriptHost::CallFunction(const std::string &name,
@@ -96,6 +96,7 @@ void ScriptHost::AddInstance(const std::vector<std::uint8_t> &buffer) {
     buff.push_back('\0');
     buff = CompileSource(reinterpret_cast<char *>(buff.data()));
     if (!vm.LoadProgram(buff)) LOG_ERROR("invalid script");
+    if (!vm.Run()) LOG_ERROR("failed to initialize VM instance");
   }
 }
 

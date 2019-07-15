@@ -14,6 +14,16 @@
 
 class ScriptHost {
  public:
+  // information of sprite in GameScene
+  using SpriteInfo = std::unordered_map<std::string, int>;
+  // information of scene in SceneManager
+  struct SceneInfo {
+    int id;
+    SpriteInfo sprite_info;
+  };
+  // hashmap that stores all scene information
+  using SceneMap = std::unordered_map<std::string, SceneInfo>;
+
   ScriptHost(const SceneManager &scene_man) : scene_man_(scene_man) {}
 
   // clear all stored information
@@ -49,15 +59,9 @@ class ScriptHost {
 
   // getters
   const SceneManager &scene_man() const { return scene_man_; }
+  const SceneMap &scene_map() const { return scene_map_; }
 
  private:
-  // information of sprite in GameScene
-  using SpriteInfo = std::unordered_map<std::string, int>;
-  // information of scene in SceneManager
-  struct SceneInfo {
-    int id;
-    SpriteInfo sprite_info;
-  };
   // information of VM instance
   struct VMInfo {
     ionia::vm::VM vm;
@@ -65,14 +69,15 @@ class ScriptHost {
     std::string last_sym;
   };
 
-  // push a new VM instance back to 'vms_'
-  ionia::vm::VM &PushBackNewVM();
   // symbol error handler of all VM instances
   bool SymErrorHandler(int id, const std::string &sym,
                        ionia::vm::Value &val);
   // external function in all VM instances
   bool VMHandler(int id, ionia::vm::VM::ValueStack &vals,
                  ionia::vm::Value &ret);
+
+  // push a new VM instance back to 'vms_'
+  ionia::vm::VM &PushBackNewVM();
   // call the function in script by name
   void CallFunction(const std::string &name,
                     const std::vector<ionia::vm::Value> &args,
@@ -87,7 +92,7 @@ class ScriptHost {
   // cache for mapping function name to VM id
   std::unordered_map<std::string, int> func_id_map_;
   // information of scenes & sprites
-  std::unordered_map<std::string, SceneInfo> scene_map_;
+  SceneMap scene_map_;
 };
 
 #endif  // ZODIA_SCRIPT_HOST_H_
