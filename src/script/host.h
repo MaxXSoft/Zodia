@@ -12,7 +12,7 @@
 #include "define/key.h"
 #include "script/runtime.h"
 
-class ScriptHost {
+class ScriptHost : public RuntimeBase {
  public:
   // information of sprite in GameScene
   using SpriteInfo = std::unordered_map<std::string, int>;
@@ -24,20 +24,15 @@ class ScriptHost {
   // hashmap that stores all scene information
   using SceneMap = std::unordered_map<std::string, SceneInfo>;
 
-  ScriptHost(const SceneManager &scene_man) : scene_man_(scene_man) {}
+  ScriptHost(const SceneManager &scene_man) : scene_man_(scene_man) {
+    InitRuntimes();
+  }
 
   // clear all stored information
   void Clear() {
     vms_.clear();
     func_id_map_.clear();
     scene_map_.clear();
-  }
-
-  // add new runtime library to host
-  template <typename T>
-  void AddNewRuntime() {
-    auto rt = std::make_unique<T>(*this);
-    runtimes_.insert({rt->name(), std::move(rt)});
   }
 
   // add a new VM instance (from file)
@@ -61,6 +56,21 @@ class ScriptHost {
   const SceneManager &scene_man() const { return scene_man_; }
   const SceneMap &scene_map() const { return scene_map_; }
 
+ protected:
+  RuntimeRef GetChild(const std::string &name) override {
+    auto it = runtimes_.find(name);
+    return it != runtimes_.end() ? it->second.get() : nullptr;
+  }
+
+  RuntimeRef GetElement(const std::string &name) override {
+    return nullptr;
+  }
+
+  bool Handler(ionia::vm::VM::ValueStack &vals,
+               ionia::vm::Value &ret) override {
+    return false;
+  }
+
  private:
   // information of VM instance
   struct VMInfo {
@@ -69,6 +79,8 @@ class ScriptHost {
     std::string last_sym;
   };
 
+  // initialize all runtimes
+  void InitRuntimes();
   // symbol error handler of all VM instances
   bool SymErrorHandler(int id, const std::string &sym,
                        ionia::vm::Value &val);

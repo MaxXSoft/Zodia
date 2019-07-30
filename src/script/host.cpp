@@ -12,9 +12,13 @@
 
 using namespace ionia;
 
+void ScriptHost::InitRuntimes() {
+  // TODO
+}
+
 bool ScriptHost::SymErrorHandler(int id, const std::string &sym,
                                  vm::Value &val) {
-  if (sym.find('.') != std::string::npos) {
+  if (IsComplexPath(sym)) {
     // store the symbol name
     vms_[id].last_sym = sym;
     // return VM handler
@@ -27,15 +31,11 @@ bool ScriptHost::SymErrorHandler(int id, const std::string &sym,
 bool ScriptHost::VMHandler(int id, vm::VM::ValueStack &vals,
                            vm::Value &ret) {
   const auto &sym = vms_[id].last_sym;
-  // get splitted path
-  auto dot_pos = sym.find('.');
-  auto lib_name = sym.substr(0, dot_pos);
-  auto path = sym.substr(dot_pos + 1);
-  // get pointer of library
-  auto it = runtimes_.find(lib_name);
-  if (it == runtimes_.end()) LOG_ERROR("invalid runtime library name");
+  // get runtime by path
+  auto runtime = Parse(sym);
+  if (!runtime) LOG_ERROR("invalid runtime library path");
   // call handler
-  return it->second->Handler(path, vals, ret);
+  return runtime->Call(vals, ret);
 }
 
 vm::VM &ScriptHost::PushBackNewVM() {
