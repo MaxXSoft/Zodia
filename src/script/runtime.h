@@ -6,30 +6,37 @@
 
 #include "ionia/src/vm/vm.h"
 
-// forward declaration of script host
-class ScriptHost;
+// type definitions
+class RuntimeBase;
+using RuntimePtr = std::unique_ptr<RuntimeBase>;
+using RuntimeRef = RuntimeBase *;
 
 // base class of runtime library in script host
 class RuntimeBase {
  public:
-  RuntimeBase(const ScriptHost &host) : host_(host) {}
+  // check if is a complex runtime path (including '.' or '[*]')
+  static bool IsComplexPath(const std::string &path) {
+    return path.find('.') != std::string::npos ||
+           (path.find('[') != std::string::npos &&
+            path.find(']') != std::string::npos);
+  }
 
-  // handler of library
-  virtual bool Handler(const std::string &path,
-                       ionia::vm::VM::ValueStack &vals,
-                       ionia::vm::Value &ret) = 0;
+  // parse the path and return a reference of next runtime
+  RuntimeRef Parse(const std::string &path);
+  // call the handler of current runtime
+  bool Call(ionia::vm::VM::ValueStack &vals, ionia::vm::Value &ret);
 
   // getters
-  // get library name
-  virtual const std::string &name() const = 0;
+  virtual bool is_callable() const = 0;
 
  protected:
-  const ScriptHost &host() const { return host_; }
-
- private:
-  const ScriptHost &host_;
+  // get child object (like '.id') by name
+  virtual RuntimeRef GetChild(const std::string &name) = 0;
+  // get element object (like '[id]') by name
+  virtual RuntimeRef GetElement(const std::string &name) = 0;
+  // handler of current runtime
+  virtual bool Handler(ionia::vm::VM::ValueStack &vals,
+                       ionia::vm::Value &ret) = 0;
 };
-
-using RuntimePtr = std::unique_ptr<RuntimeBase>;
 
 #endif  // ZODIA_SCRIPT_RUNTIME_H_
