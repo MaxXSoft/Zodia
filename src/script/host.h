@@ -24,7 +24,7 @@ class ScriptHost : public RuntimeBase {
   // hashmap that stores all scene information
   using SceneMap = std::unordered_map<std::string, SceneInfo>;
 
-  ScriptHost(const SceneManager &scene_man) : scene_man_(scene_man) {
+  ScriptHost(SceneManager &scene_man) : scene_man_(scene_man) {
     InitRuntimes();
   }
 
@@ -56,7 +56,7 @@ class ScriptHost : public RuntimeBase {
 
   // getters
   bool is_callable() const override { return false; }
-  const SceneManager &scene_man() const { return scene_man_; }
+  SceneManager &scene_man() const { return scene_man_; }
   const SceneMap &scene_map() const { return scene_map_; }
 
  protected:
@@ -101,7 +101,7 @@ class ScriptHost : public RuntimeBase {
                     ionia::vm::Value &ret);
 
   // reference of scene manager in game window
-  const SceneManager &scene_man_;
+  SceneManager &scene_man_;
   // all runtime libraries
   std::unordered_map<std::string, RuntimePtr> runtimes_;
   // all VM instances
