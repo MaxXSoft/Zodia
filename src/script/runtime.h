@@ -26,6 +26,9 @@ class RuntimeBase {
   // call the handler of current runtime
   bool Call(ionia::vm::VM::ValueStack &vals, ionia::vm::Value &ret);
 
+  // reset internal state
+  virtual void ResetState() = 0;
+
   // getters
   virtual bool is_callable() const = 0;
 
