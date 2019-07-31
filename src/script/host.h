@@ -53,6 +53,7 @@ class ScriptHost : public RuntimeBase {
   void CallBeginHandler(const std::string &name, KeyStatus key);
 
   // getters
+  bool is_callable() const override { return false; }
   const SceneManager &scene_man() const { return scene_man_; }
   const SceneMap &scene_map() const { return scene_map_; }
 
