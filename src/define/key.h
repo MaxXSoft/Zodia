@@ -21,8 +21,8 @@ using KeyStatus = std::uint64_t;
 
 // some helper macros
 #define KEY_PRESSED(status, key)              \
-    ((status) & (1 << key))
+    ((status) & (1 << (key)))
 #define SET_KEY_STATUS(status, pressed, key)  \
-    status |= (!!pressed & 1) << key
+    status |= (!!(pressed) & 1) << (key)
 
 #endif  // ZODIA_DEFINE_KEY_H_
