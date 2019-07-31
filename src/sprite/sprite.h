@@ -42,6 +42,7 @@ class Sprite {
   void set_bounding(const SDLRect &bounding) { bounding_ = bounding; }
 
   // getters
+  ParentPtr parent() const { return parent_; }
   int x() const { return x_; }
   int y() const { return y_; }
   int width() const { return width_; }
@@ -51,7 +52,6 @@ class Sprite {
 
  protected:
   // getters (protected)
-  ParentPtr parent() const { return parent_; }
   bool is_clipped() const { return is_clipped_; }
   const SDLRect &clip() const { return clip_; }
   const SDLTexturePtr &texture() const { return texture_; }
