@@ -19,10 +19,11 @@ RuntimeRef RuntimeBase::Parse(const std::string &path) {
     rest = path.substr(pos + 1);
   }
   else {
+    int start = path.front() == '.' ? 1 : 0;
     // get the position of '.'
-    auto pos = path.find('.');
+    auto pos = path.find('.', start);
     // get reference of child
-    ref = GetChild(path.substr(0, pos));
+    ref = GetChild(path.substr(start, pos));
     if (pos != std::string::npos) rest = path.substr(pos + 1);
   }
   return ref ? ref->Parse(rest) : nullptr;
