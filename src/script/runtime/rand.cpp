@@ -40,7 +40,6 @@ bool RandRuntime::Handler(VM::ValueStack &vals, Value &ret) {
   // get opcode by name
   auto it = ops_.find(op_);
   if (it == ops_.end()) return false;
-  ops_.clear();
   // perform operations
   switch (it->second) {
     case RandOp::Randomize: {

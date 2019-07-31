@@ -12,6 +12,8 @@ class TimerRuntime : public RuntimeBase {
  public:
   TimerRuntime();
 
+  void ResetState() override { op_.clear(); }
+
   // getters
   bool is_callable() const override { return !op_.empty(); }
 

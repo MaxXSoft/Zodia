@@ -11,6 +11,8 @@ class MathRuntime : public RuntimeBase {
  public:
   MathRuntime();
 
+  void ResetState() override { name_.clear(); }
+
   // getters
   bool is_callable() const override { return !name_.empty(); }
 

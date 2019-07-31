@@ -183,8 +183,6 @@ RuntimeRef MathRuntime::GetElement(const std::string &name) {
 }
 
 bool MathRuntime::Handler(VM::ValueStack &vals, Value &ret) {
-  // reset internal state
-  name_.clear();
   // get specific method
   auto it = methods_.find(name_);
   if (it == methods_.end()) return false;

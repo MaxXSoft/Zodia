@@ -44,7 +44,6 @@ bool KeyRuntime::Handler(VM::ValueStack &vals, Value &ret) {
   // get 'KeyName' by name
   auto it = key_map_.find(key_);
   if (it == key_map_.end()) return false;
-  key_.clear();
   // get parameter
   if (vals.top().env) return false;
   KeyStatus status = vals.top().value;

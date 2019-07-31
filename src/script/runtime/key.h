@@ -11,6 +11,8 @@ class KeyRuntime : public RuntimeBase {
  public:
   KeyRuntime();
 
+  void ResetState() override { key_.clear(); }
+
   // getters
   bool is_callable() const override { return !key_.empty(); }
 

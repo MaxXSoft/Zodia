@@ -35,6 +35,8 @@ class ScriptHost : public RuntimeBase {
     scene_map_.clear();
   }
 
+  void ResetState() override { InitRuntimes(); }
+
   // add a new VM instance (from file)
   void AddInstance(const std::string &file);
   // add a new VM instance (from memory)
@@ -60,7 +62,9 @@ class ScriptHost : public RuntimeBase {
  protected:
   RuntimeRef GetChild(const std::string &name) override {
     auto it = runtimes_.find(name);
-    return it != runtimes_.end() ? it->second.get() : nullptr;
+    if (it == runtimes_.end()) return nullptr;
+    it->second->ResetState();
+    return it->second.get();
   }
 
   RuntimeRef GetElement(const std::string &name) override {

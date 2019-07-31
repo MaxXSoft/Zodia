@@ -10,6 +10,8 @@ class RandRuntime : public RuntimeBase {
  public:
   RandRuntime();
 
+  void ResetState() override { op_.clear(); }
+
   // getters
   bool is_callable() const override { return !op_.empty(); }
 
