@@ -71,6 +71,7 @@ bool SpriteRuntime::Handler(VM::ValueStack &vals, Value &ret) {
       vals.pop();
       break;
     }
+    default:;
   }
   // perform operations
   ret.value = 0;

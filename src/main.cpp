@@ -28,16 +28,19 @@ int main(int argc, const char *argv[]) {
   argp.AddOption<bool>("help", "h", "show this message", false);
   argp.AddOption<bool>("version", "v", "show version info", false);
   // parse arguments
-  if (!argp.Parse(argc, argv)) {
-    cerr << "invalid input, run '";
-    cerr << argp.program_name() << " -h' for help" << endl;
-    return 1;
-  }
-  else if (argp.GetValue<bool>("help")) {
+  auto ret = argp.Parse(argc, argv);
+  if (argp.GetValue<bool>("help")) {
     argp.PrintHelp();
+    return 0;
   }
   else if (argp.GetValue<bool>("version")) {
     PrintVersion();
+    return 0;
+  }
+  else if (!ret) {
+    cerr << "invalid input, run '";
+    cerr << argp.program_name() << " -h' for help" << endl;
+    return 1;
   }
   else {
     // run game

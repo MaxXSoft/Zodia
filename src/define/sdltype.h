@@ -3,7 +3,7 @@
 
 #include <memory>
 
-#include <SDL2/SDL.h>
+#include "SDL.h"
 
 using SDLWindowPtr =
     std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)>;

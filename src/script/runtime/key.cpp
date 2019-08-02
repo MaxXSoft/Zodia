@@ -48,7 +48,7 @@ bool KeyRuntime::Handler(VM::ValueStack &vals, Value &ret) {
   if (vals.top().env) return false;
   KeyStatus status = vals.top().value;
   vals.pop();
-  status |= vals.top().value << 32ULL;
+  status |= static_cast<KeyStatus>(vals.top().value) << 32;
   vals.pop();
   // check if key was pressed
   ret.env = nullptr;

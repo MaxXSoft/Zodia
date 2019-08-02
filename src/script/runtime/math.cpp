@@ -36,7 +36,7 @@ bool MathRuntime::MethodHandler(MethodType type, VM::ValueStack &vals,
                                 Value &ret) {
   using Type = MethodType;
   // get operands
-  int lhs, rhs;
+  int lhs = 0, rhs = 0;
   if (RANGE_INT(type, Type::Float, Type::Round) ||
       RANGE_INT(type, Type::Sqrt, Type::IAbs) ||
       RANGE_INT(type, Type::Exp, Type::ATanH)) {

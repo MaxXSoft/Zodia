@@ -4,7 +4,7 @@
 #include <ctime>
 #include <iostream>
 
-#include <SDL2/SDL.h>
+#include "SDL.h"
 
 bool Logger::enabled_ = true;
 std::ostream *Logger::os_ = &std::cerr;

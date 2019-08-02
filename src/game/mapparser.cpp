@@ -93,7 +93,7 @@ void MapParser::ParseResources(xml_node<> *node) {
   auto base = node->first_attribute("base");
   auto path = GetPath(file_, base ? base->value() : nullptr);
   // traversal all images
-  for (auto i = node->first_node(); i; i->next_sibling()) {
+  for (auto i = node->first_node(); i; i = i->next_sibling()) {
     ParseImage(i, path);
   }
 }
@@ -122,7 +122,7 @@ void MapParser::ParseScripts(xml_node<> *node) {
   auto base = node->first_attribute("base");
   auto path = GetPath(file_, base ? base->value() : nullptr);
   // traversal all images
-  for (auto i = node->first_node(); i; i->next_sibling()) {
+  for (auto i = node->first_node(); i; i = i->next_sibling()) {
     ParseScript(i, path);
   }
 }
@@ -203,7 +203,7 @@ void MapParser::ParseLayer(xml_node<> *node, Layers &layers) {
     order_val = layers.empty() ? 0 : layers.rbegin()->first + 1;
   }
   // traversal all sprites
-  for (auto i = node->first_node(); i; i->next_sibling()) {
+  for (auto i = node->first_node(); i; i = i->next_sibling()) {
     ParseSprite(i, layers[order_val]);
   }
 }
@@ -336,7 +336,7 @@ SpritePtr MapParser::ParseNumber(xml_node<> *node) {
 SpritePtr MapParser::ParseGroup(xml_node<> *node) {
   // traversal all sprites
   Sprites sprites;
-  for (auto i = node->first_node(); i; i->next_sibling()) {
+  for (auto i = node->first_node(); i; i = i->next_sibling()) {
     ParseSprite(i, sprites);
   }
   // create group

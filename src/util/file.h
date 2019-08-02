@@ -7,7 +7,7 @@
 
 inline std::string GetBasePath(const std::string &file) {
   auto pos = file.rfind('/');
-  if (pos = std::string::npos) return "";
+  if (pos == std::string::npos) return "";
   return file.substr(0, file.size() - pos);
 }
 

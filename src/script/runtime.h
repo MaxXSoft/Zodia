@@ -14,6 +14,8 @@ using RuntimeRef = RuntimeBase *;
 // base class of runtime library in script host
 class RuntimeBase {
  public:
+  virtual ~RuntimeBase() = default;
+
   // check if is a complex runtime path (including '.' or '[*]')
   static bool IsComplexPath(const std::string &path) {
     return path.find('.') != std::string::npos ||

@@ -148,5 +148,7 @@ void ScriptHost::CallResetHandler(const std::string &name) {
 void ScriptHost::CallBeginHandler(const std::string &name, KeyStatus key) {
   vm::Value ret;
   // TODO: fix this compromise method
-  CallFunction(name, {{key & 0xffffffff}, {key >> 32}}, ret);
+  auto k1 = static_cast<int>(key & 0xffffffff);
+  auto k2 = static_cast<int>(key >> 32);
+  CallFunction(name, {{k1}, {k2}}, ret);
 }

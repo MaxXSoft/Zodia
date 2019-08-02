@@ -53,6 +53,7 @@ bool BoundingRuntime::Handler(VM::ValueStack &vals, Value &ret) {
       if (!GetArg(vals, arg)) return false;
       break;
     }
+    default:;
   }
   // get bounding from sprite
   auto bounding = sprite_rt_.sprite()->bounding();
