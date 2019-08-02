@@ -15,11 +15,7 @@ class SceneManager {
   SceneManager(Window &game) : game_(game) {}
 
   // add a new game scene to manager
-  void AddScene(const std::string &id, const GameScenePtr &scene) {
-    scenes_[id] = scene;
-    cur_id_ = id;
-    cur_scene_ = scene;
-  }
+  bool AddScene(const std::string &id, const GameScenePtr &scene);
 
   // clear all scenes
   void Clear() {
@@ -39,11 +35,7 @@ class SceneManager {
   // force rendering current scene
   void RenderGame();
   // switch to specific game scene
-  void SwitchScene(const std::string &id) {
-    cur_id_ = id;
-    cur_scene_ = scenes_[id];
-    cur_scene_->Reset();
-  }
+  bool SwitchScene(const std::string &id);
 
   // getters
   const std::string &cur_id() const { return cur_id_; }
