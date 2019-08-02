@@ -52,7 +52,7 @@ class ScriptHost : public RuntimeBase {
   // getters
   bool is_callable() const override { return false; }
   SceneManager &scene_man() const { return scene_man_; }
-  const SpriteMap &scene_map() const { return sprite_map_; }
+  const SpriteMap &sprite_map() const { return sprite_map_; }
 
  protected:
   RuntimeRef GetChild(const std::string &name) override {
