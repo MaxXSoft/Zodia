@@ -29,8 +29,6 @@ class MapParser {
   using Bytes = std::vector<std::uint8_t>;
   using Sprites = std::unordered_map<std::string, SpritePtr>;
   using Layers = std::map<int, Sprites>;
-  // mapping for scene id to scene number
-  using SceneNum = std::map<std::string, int>;
 
   // read content of input stream to RapidXml
   void ReadFile();
@@ -40,7 +38,7 @@ class MapParser {
   void ParseScripts(rapidxml::xml_node<> *node);
   void ParseScript(rapidxml::xml_node<> *node, const std::string &base);
   void ParseScenes(rapidxml::xml_node<> *node);
-  void ParseScene(rapidxml::xml_node<> *node, SceneNum &scene_num);
+  void ParseScene(rapidxml::xml_node<> *node);
   void ParseLayer(rapidxml::xml_node<> *node, Layers &layers);
   void ParseSprite(rapidxml::xml_node<> *node, Sprites &sprites);
 

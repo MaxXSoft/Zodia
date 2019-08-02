@@ -22,7 +22,7 @@ namespace {
 
 inline bool IsValidMap(const std::string &xmlns) {
   // check prefix
-  std::string ns = "http://maxxsoft.net/schemas/zodia/v";
+  std::string ns = "https://maxxsoft.net/schemas/zodia/v";
   if (xmlns.substr(0, ns.size()) != ns) return false;
   // read version
   auto version = xmlns.substr(ns.size());
@@ -146,24 +146,20 @@ void MapParser::ParseScript(xml_node<> *node, const std::string &base) {
 
 void MapParser::ParseScenes(xml_node<> *node) {
   // traversal all scene nodes
-  SceneNum scene_num;
   for (auto i = node->first_node("scene"); i; i = i->next_sibling()) {
-    ParseScene(i, scene_num);
+    ParseScene(i);
   }
   // set default scene
   auto def_id = node->first_attribute("default");
   if (!def_id) {
-    auto it = scene_num.find(def_id->value());
-    if (it == scene_num.end()) {
+    // try to switch to specific scene
+    if (!window_.scene_man().SwitchScene(def_id->value())) {
       LOG_ERROR("invalid id of default scene");
-    }
-    else {
-      window_.scene_man().SwitchScene(it->second);
     }
   }
 }
 
-void MapParser::ParseScene(xml_node<> *node, SceneNum &scene_num) {
+void MapParser::ParseScene(xml_node<> *node) {
   // get attributes
   auto id = node->first_attribute("id");
   if (!id) LOG_ERROR("scene must have id");
@@ -190,11 +186,10 @@ void MapParser::ParseScene(xml_node<> *node, SceneNum &scene_num) {
   if (reset) scene->set_reset_handler(reset->value());
   if (begin) scene->set_begin_handler(begin->value());
   // add scene to manager
-  auto num = window_.scene_man().AddScene(scene);
-  auto ret = scene_num.insert({id->value(), num});
-  if (!ret.second) LOG_ERROR("scene id conflicted");
+  auto ret = window_.scene_man().AddScene(id->value(), scene);
+  if (!ret) LOG_ERROR("scene id conflicted");
   // register scene
-  host_.RegisterScene(id->value(), num);
+  host_.RegisterScene(id->value());
 }
 
 void MapParser::ParseLayer(xml_node<> *node, Layers &layers) {
