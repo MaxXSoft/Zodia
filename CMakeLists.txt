@@ -53,4 +53,5 @@ file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 # executable
 add_executable(zodia ${SOURCES})
+add_dependencies(zodia Ionia)
 target_link_libraries(zodia ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ionia)
