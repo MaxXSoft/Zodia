@@ -52,6 +52,7 @@ int main(int argc, const char *argv[]) {
     catch (const std::runtime_error &e) {
       cerr << "Zodia terminated unexpectedly due to an error: ";
       cerr << e.what() << endl;
+      return 1;
     }
   }
   return 0;
