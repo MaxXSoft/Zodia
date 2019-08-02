@@ -8,7 +8,7 @@
 inline std::string GetBasePath(const std::string &file) {
   auto pos = file.rfind('/');
   if (pos == std::string::npos) return "";
-  return file.substr(0, file.size() - pos);
+  return file.substr(0, pos + 1);
 }
 
 inline std::string NormalizePath(const std::string &path) {
