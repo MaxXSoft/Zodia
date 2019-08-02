@@ -10,10 +10,20 @@
 #include "ionia/src/back/compiler/compiler.h"
 #include "util/logger.h"
 
+// runtime libraries
+#include "script/runtime/math.h"
+#include "script/runtime/key.h"
+#include "script/runtime/rand.h"
+#include "script/runtime/timer.h"
+
 using namespace ionia;
 
 void ScriptHost::InitRuntimes() {
   // TODO
+  runtimes_["math"] = std::make_unique<MathRuntime>();
+  runtimes_["key?"] = std::make_unique<KeyRuntime>();
+  runtimes_["rand"] = std::make_unique<RandRuntime>();
+  runtimes_["timer"] = std::make_unique<TimerRuntime>();
 }
 
 bool ScriptHost::SymErrorHandler(int id, const std::string &sym,
@@ -117,16 +127,16 @@ std::vector<std::uint8_t> ScriptHost::CompileSource(
   return comp.GenerateBytecode();
 }
 
-void ScriptHost::RegisterScene(const std::string &name, int id) {
-  assert(scene_map_.find(name) == scene_map_.end());
-  scene_map_[name] = {id, {}};
+void ScriptHost::RegisterScene(const std::string &name) {
+  assert(sprite_map_.find(name) == sprite_map_.end());
+  sprite_map_[name] = {};
 }
 
-void ScriptHost::RegisterSprite(const std::string &name,
-                                const std::string &scene, int layer_id) {
-  auto it = scene_map_.find(scene);
-  if (it == scene_map_.end()) LOG_ERROR("scene does not exist");
-  auto ret = it->second.sprite_info.insert({name, layer_id});
+void ScriptHost::RegisterSprite(const std::string &scene,
+                                const std::string &name, int layer_id) {
+  auto it = sprite_map_.find(scene);
+  if (it == sprite_map_.end()) LOG_ERROR("scene does not exist");
+  auto ret = it->second.insert({name, layer_id});
   if (!ret.second) LOG_ERROR("sprite id conflicted");
 }
 
