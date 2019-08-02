@@ -1,52 +1,59 @@
 #ifndef ZODIA_SCENE_SCENEMAN_H_
 #define ZODIA_SCENE_SCENEMAN_H_
 
-#include <vector>
+#include <string>
+#include <unordered_map>
 
-#include "core/window.h"
 #include "scene/gamescene.h"
+
+// forward declaration
+class Window;
 
 // manager for all game scenes
 class SceneManager {
  public:
-  SceneManager(Window &game) : game_(game), cur_index_(0) {}
+  SceneManager(Window &game) : game_(game) {}
 
   // add a new game scene to manager
-  int AddScene(const GameScenePtr &scene) {
-    scenes_.push_back(scene);
-    return scenes_.size() - 1;
+  void AddScene(const std::string &id, const GameScenePtr &scene) {
+    scenes_[id] = scene;
+    cur_id_ = id;
+    cur_scene_ = scene;
   }
 
   // clear all scenes
-  void Clear() { scenes_.clear(); }
+  void Clear() {
+    scenes_.clear();
+    cur_id_.clear();
+    cur_scene_ = nullptr;
+  }
 
   // will be called by game window
   // notify current game scene that new frame has begun
-  void FrameBegin(KeyStatus status) {
-    scenes_[cur_index_]->FrameBegin(status);
-  }
+  void FrameBegin(KeyStatus status) { cur_scene_->FrameBegin(status); }
 
   // quit from game
-  void QuitGame() { game_.Quit(); }
+  void QuitGame();
   // pause current game
-  void PauseGame(bool is_paused) { game_.set_paused(is_paused); }
+  void PauseGame(bool is_paused);
   // force rendering current scene
-  void RenderGame() { game_.Render(); }
+  void RenderGame();
   // switch to specific game scene
-  void SwitchScene(int id) {
-    cur_index_ = id;
-    scenes_[cur_index_]->Reset();
+  void SwitchScene(const std::string &id) {
+    cur_id_ = id;
+    cur_scene_ = scenes_[id];
+    cur_scene_->Reset();
   }
 
   // getters
-  const ScenePtr &cur_scene() const {
-    return scenes_[cur_index_]->GetScene();
-  }
+  const std::string &cur_id() const { return cur_id_; }
+  const ScenePtr &cur_scene() const { return cur_scene_->GetScene(); }
 
  private:
   Window &game_;
-  std::vector<GameScenePtr> scenes_;
-  int cur_index_;
+  std::unordered_map<std::string, GameScenePtr> scenes_;
+  std::string cur_id_;
+  GameScenePtr cur_scene_;
 };
 
 #endif  // ZODIA_SCENE_SCENEMAN_H_
