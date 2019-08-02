@@ -178,7 +178,7 @@ void MapParser::ParseScene(xml_node<> *node) {
     for (const auto &it : i.second) {
       scene->GetScene()->AddSprite(order, it.first, it.second);
       // register sprite
-      host_.RegisterSprite(it.first, id->value(), order);
+      host_.RegisterSprite(id->value(), it.first, order);
     }
     ++order;
   }

@@ -14,15 +14,10 @@
 
 class ScriptHost : public RuntimeBase {
  public:
-  // information of sprite in GameScene
+  // information of sprite in GameScene (sprite_name -> layer_id)
   using SpriteInfo = std::unordered_map<std::string, int>;
-  // information of scene in SceneManager
-  struct SceneInfo {
-    int id;
-    SpriteInfo sprite_info;
-  };
-  // hashmap that stores all scene information
-  using SceneMap = std::unordered_map<std::string, SceneInfo>;
+  // hashmap that stores all sprites (scene_id -> sprite_info)
+  using SpriteMap = std::unordered_map<std::string, SpriteInfo>;
 
   ScriptHost(SceneManager &scene_man) : scene_man_(scene_man) {
     InitRuntimes();
@@ -32,7 +27,7 @@ class ScriptHost : public RuntimeBase {
   void Clear() {
     vms_.clear();
     func_id_map_.clear();
-    scene_map_.clear();
+    sprite_map_.clear();
   }
 
   void ResetState() override { InitRuntimes(); }
@@ -45,9 +40,9 @@ class ScriptHost : public RuntimeBase {
   std::vector<std::uint8_t> CompileSource(const std::string &source);
 
   // register scene with name by scene id
-  void RegisterScene(const std::string &name, int id);
+  void RegisterScene(const std::string &name);
   // register sprite in scene
-  void RegisterSprite(const std::string &name, const std::string &scene,
+  void RegisterSprite(const std::string &scene, const std::string &name,
                       int layer_id);
   // call handler of 'Reset' event in game scene
   void CallResetHandler(const std::string &name);
@@ -57,7 +52,7 @@ class ScriptHost : public RuntimeBase {
   // getters
   bool is_callable() const override { return false; }
   SceneManager &scene_man() const { return scene_man_; }
-  const SceneMap &scene_map() const { return scene_map_; }
+  const SpriteMap &scene_map() const { return sprite_map_; }
 
  protected:
   RuntimeRef GetChild(const std::string &name) override {
@@ -108,8 +103,8 @@ class ScriptHost : public RuntimeBase {
   std::vector<VMInfo> vms_;
   // cache for mapping function name to VM id
   std::unordered_map<std::string, int> func_id_map_;
-  // information of scenes & sprites
-  SceneMap scene_map_;
+  // information of sprites
+  SpriteMap sprite_map_;
 };
 
 #endif  // ZODIA_SCRIPT_HOST_H_
