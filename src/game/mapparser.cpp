@@ -132,7 +132,7 @@ void MapParser::ParseScript(xml_node<> *node, const std::string &base) {
     // add script from file
     auto source = node->first_attribute("source");
     if (!source) LOG_ERROR("expected source");
-    host_.AddInstance(source->value());
+    host_.AddInstance(base + source->value());
   }
   else if (!std::strcmp(node->name(), "raw")) {
     // add script from raw data
@@ -165,6 +165,8 @@ void MapParser::ParseScene(xml_node<> *node) {
   if (!id) LOG_ERROR("scene must have id");
   auto reset = node->first_attribute("onreset");
   auto begin = node->first_attribute("onbegin");
+  // register scene
+  host_.RegisterScene(id->value());
   // traversal all layers
   Layers layers;
   for (auto i = node->first_node("layer"); i; i = i->next_sibling()) {
@@ -188,8 +190,6 @@ void MapParser::ParseScene(xml_node<> *node) {
   // add scene to manager
   auto ret = window_.scene_man().AddScene(id->value(), scene);
   if (!ret) LOG_ERROR("scene id conflicted");
-  // register scene
-  host_.RegisterScene(id->value());
 }
 
 void MapParser::ParseLayer(xml_node<> *node, Layers &layers) {

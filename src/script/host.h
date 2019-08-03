@@ -89,7 +89,7 @@ class ScriptHost : public RuntimeBase {
                  ionia::vm::Value &ret);
 
   // push a new VM instance back to 'vms_'
-  ionia::vm::VM &PushBackNewVM();
+  std::size_t PushBackNewVM();
   // call the function in script by name
   void CallFunction(const std::string &name,
                     const std::vector<ionia::vm::Value> &args,

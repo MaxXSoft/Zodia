@@ -15,6 +15,7 @@
 #include "script/runtime/key.h"
 #include "script/runtime/rand.h"
 #include "script/runtime/timer.h"
+#include "script/runtime/sprite.h"
 
 using namespace ionia;
 
@@ -24,6 +25,7 @@ void ScriptHost::InitRuntimes() {
   runtimes_["key?"] = std::make_unique<KeyRuntime>();
   runtimes_["rand"] = std::make_unique<RandRuntime>();
   runtimes_["timer"] = std::make_unique<TimerRuntime>();
+  runtimes_["sprite"] = std::make_unique<SpriteRuntime>(*this);
 }
 
 bool ScriptHost::SymErrorHandler(int id, const std::string &sym,
@@ -48,7 +50,7 @@ bool ScriptHost::VMHandler(int id, vm::VM::ValueStack &vals,
   return runtime->Call(vals, ret);
 }
 
-vm::VM &ScriptHost::PushBackNewVM() {
+std::size_t ScriptHost::PushBackNewVM() {
   using namespace std::placeholders;
   // create new VM instance
   vms_.emplace_back();
@@ -57,12 +59,7 @@ vm::VM &ScriptHost::PushBackNewVM() {
   // set handler of current instance
   auto hand = std::bind(&ScriptHost::SymErrorHandler, this, vm_id, _1, _2);
   info.vm.set_sym_error_handler(hand);
-  // set up external function
-  auto ext_fun = std::bind(&ScriptHost::VMHandler, this, vm_id, _1, _2);
-  if (!info.vm.RegisterFunction("zodia:handler", ext_fun, info.handler)) {
-    LOG_ERROR("failed to create new VM instance");
-  }
-  return info.vm;
+  return vm_id;
 }
 
 void ScriptHost::CallFunction(const std::string &name,
@@ -98,7 +95,11 @@ void ScriptHost::AddInstance(const std::string &file) {
 }
 
 void ScriptHost::AddInstance(const std::vector<std::uint8_t> &buffer) {
-  auto &vm = PushBackNewVM();
+  using namespace std::placeholders;
+  // create new VM and get info
+  auto id = PushBackNewVM();
+  auto &info = vms_[id];
+  auto &vm = info.vm;
   // try to load as bytecode
   if (!vm.LoadProgram(buffer)) {
     // compile and try again
@@ -106,6 +107,10 @@ void ScriptHost::AddInstance(const std::vector<std::uint8_t> &buffer) {
     buff.push_back('\0');
     buff = CompileSource(reinterpret_cast<char *>(buff.data()));
     if (!vm.LoadProgram(buff)) LOG_ERROR("invalid script");
+    // set up external function
+    auto ext_fun = std::bind(&ScriptHost::VMHandler, this, id, _1, _2);
+    vm.RegisterAnonFunc(ext_fun, info.handler);
+    // initialize VM instance
     if (!vm.Run()) LOG_ERROR("failed to initialize VM instance");
   }
 }

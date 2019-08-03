@@ -1,5 +1,7 @@
 #include "script/runtime.h"
 
+#include <algorithm>
+
 #include "util/logger.h"
 
 using namespace ionia::vm;
@@ -20,11 +22,13 @@ RuntimeRef RuntimeBase::Parse(const std::string &path) {
   }
   else {
     int start = path.front() == '.' ? 1 : 0;
-    // get the position of '.'
-    auto pos = path.find('.', start);
+    // get the position of '.' or '['
+    auto pos_dot = path.find('.', start);
+    auto pos_brk = path.find('[', start);
+    auto pos = std::min(pos_dot, pos_brk);
     // get reference of child
     ref = GetChild(path.substr(start, pos));
-    if (pos != std::string::npos) rest = path.substr(pos + 1);
+    if (pos != std::string::npos) rest = path.substr(pos);
   }
   return ref ? ref->Parse(rest) : nullptr;
 }

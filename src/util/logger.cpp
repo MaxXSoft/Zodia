@@ -26,6 +26,7 @@ void Logger::LogError(const std::string &message) {
   *os_ << message;
   if (error_msg && error_msg[0] != '\0') {
     *os_ << ", SDL message: " << error_msg;
+    SDL_ClearError();
   }
   *os_ << std::endl;
 }
@@ -37,7 +38,7 @@ void Logger::LogInfo(const std::string &message) {
 }
 
 void Logger::LogDebug(const std::string &message) {
-#if DEBUG
+#ifndef NDEBUG
   if (!enabled_) return;
   LogHeader("debug");
   *os_ << message << std::endl;
