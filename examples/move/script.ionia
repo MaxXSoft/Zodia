@@ -1,0 +1,6 @@
+$begin = (k1, k2):
+  ?(key?[left](k1, k2),
+    (): sprite[player].x(-(sprite[player].x?(), 10)),
+    (): ?(key?[right](k1, k2),
+          (): sprite[player].x(+(sprite[player].x?(), 10)),
+          (): 0))

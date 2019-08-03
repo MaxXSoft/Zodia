@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<game title="Move" size="1024,768" version="0.0.1" xmlns="https://maxxsoft.net/schemas/zodia/v0.0.1">
+  <scenes default="main">
+    <scene id="main" onbegin="begin">
+      <layer order="0">
+        <background id="bg" texture="bg"/>
+      </layer>
+      <layer order="1">
+        <sprite id="player" texture="player" position="400,400"/>
+      </layer>
+    </scene>
+  </scenes>
+  <resources>
+    <image id="bg" source="bg.png"/>
+    <image id="player" source="smile.png"/>
+  </resources>
+  <scripts>
+    <script source="script.ionia"/>
+  </scripts>
+</game>
