@@ -108,12 +108,12 @@ void ScriptHost::AddInstance(const std::vector<std::uint8_t> &buffer) {
     buff.push_back('\0');
     buff = CompileSource(reinterpret_cast<char *>(buff.data()));
     if (!vm.LoadProgram(buff)) LOG_ERROR("invalid script");
-    // set up external function
-    auto ext_fun = std::bind(&ScriptHost::VMHandler, this, id, _1, _2);
-    vm.RegisterAnonFunc(ext_fun, info.handler);
-    // initialize VM instance
-    if (!vm.Run()) LOG_ERROR("failed to initialize VM instance");
   }
+  // set up external function
+  auto ext_fun = std::bind(&ScriptHost::VMHandler, this, id, _1, _2);
+  vm.RegisterAnonFunc(ext_fun, info.handler);
+  // initialize VM instance
+  if (!vm.Run()) LOG_ERROR("failed to initialize VM instance");
 }
 
 std::vector<std::uint8_t> ScriptHost::CompileSource(
