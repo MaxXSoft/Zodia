@@ -16,16 +16,17 @@
 #include "script/runtime/rand.h"
 #include "script/runtime/timer.h"
 #include "script/runtime/sprite.h"
+#include "script/runtime/scene.h"
 
 using namespace ionia;
 
 void ScriptHost::InitRuntimes() {
-  // TODO
   runtimes_["math"] = std::make_unique<MathRuntime>();
   runtimes_["key?"] = std::make_unique<KeyRuntime>();
   runtimes_["rand"] = std::make_unique<RandRuntime>();
   runtimes_["timer"] = std::make_unique<TimerRuntime>();
   runtimes_["sprite"] = std::make_unique<SpriteRuntime>(*this);
+  runtimes_["scene"] = std::make_unique<SceneRuntime>(*this);
 }
 
 bool ScriptHost::SymErrorHandler(int id, const std::string &sym,
