@@ -57,7 +57,7 @@ class Window {
   void set_size(int width, int height) {
     width_ = width;
     height_ = height;
-    SDL_SetWindowSize(window_.get(), width_, height_);
+    ResetWindowSize();
   }
   void set_paused(bool paused) { paused_ = paused; }
 
@@ -112,6 +112,8 @@ class Window {
   // SDL window & renderer initializer
   // NOTE: make sure this function will only be called in constructor
   void Initialize();
+  // reset window size
+  void ResetWindowSize();
 
   // event handling
   void EventDispatch(const SDL_Event &event);

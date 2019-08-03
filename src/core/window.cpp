@@ -118,6 +118,14 @@ void Window::Initialize() {
   LOG_ERROR("failed to initialize window");
 }
 
+void Window::ResetWindowSize() {
+#ifdef UTIL_OS_MACOS
+  SDL_SetWindowSize(window_.get(), width_ / 2, height_ / 2);
+#else
+  SDL_SetWindowSize(window_.get(), width_, height_);
+#endif
+}
+
 void Window::EventDispatch(const SDL_Event &event) {
   switch (event.type) {
     case SDL_QUIT: QuitEvent(); break;

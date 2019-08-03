@@ -151,7 +151,7 @@ void MapParser::ParseScenes(xml_node<> *node) {
   }
   // set default scene
   auto def_id = node->first_attribute("default");
-  if (!def_id) {
+  if (def_id) {
     // try to switch to specific scene
     if (!window_.scene_man().SwitchScene(def_id->value())) {
       LOG_ERROR("invalid id of default scene");
