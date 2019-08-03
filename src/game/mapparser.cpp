@@ -240,16 +240,19 @@ MapParser::Bytes MapParser::ParseRaw(xml_node<> *node) {
   // get type
   auto type = node->first_attribute("type");
   if (!type) LOG_ERROR("<raw> node must have type");
+  // get data node
+  auto data = node->first_node();
+  if (!data) data = node;
   // check type
   std::string ty = type->value();
   if (ty.substr(0, 5) == "image" || ty == "ionia/bytecode") {
     // parse as base64 encoded binary
-    return DecodeBase64(node->value());
+    return DecodeBase64(data->value());
   }
   else {
     // parse as string
-    return Bytes(node->value(),
-                 node->value() + std::strlen(node->value()) + 1);
+    return Bytes(data->value(),
+                 data->value() + std::strlen(data->value()) + 1);
   }
 }
 
